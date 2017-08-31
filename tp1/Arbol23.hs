@@ -48,19 +48,29 @@ foldA23 fH fD fT arbol = case arbol of
 
 --Lista en preorden de los internos del árbol.
 internos::Arbol23 a b->[b]
-internos = foldA23 (\x -> []) (\x a1 a2 -> [x] ++ a1 ++ a2) (\x z a1 a2 a3 -> [x,z] ++ a1 ++a2 ++a3)
+internos = foldA23 fHoja fDos fTres 
+            where fHoja = (\x -> []) 
+                  fDos = (\x a1 a2 -> [x] ++ a1 ++ a2) 
+                  fTres = (\x z a1 a2 a3 -> [x,z] ++ a1 ++a2 ++a3)
 
 --Lista las hojas de izquierda a derecha.
 hojas::Arbol23 a b->[a]
-hojas = foldA23 (\x -> [x]) (\ x a1 a2 -> a1 ++ a2) (\x z a1 a2 a3 -> a1 ++ a2 ++ a3)
+hojas = foldA23 fHoja fDos fTres 
+            where fHoja = (\x -> [x]) 
+                  fDos = (\ x a1 a2 -> a1 ++ a2) 
+                  fTres = (\x z a1 a2 a3 -> a1 ++ a2 ++ a3)
 
 esHoja::Arbol23 a b->Bool
 esHoja (Hoja a) = True
 esHoja (Dos b a1 a2) = False
 esHoja (Tres b1 b2 a1 a2 a3) = False
 
+-- recorrer el arbol e ir armando uno aplicando las funciones
 mapA23::(a->c)->(b->d)->Arbol23 a b->Arbol23 c d
-mapA23 = undefined
+mapA23 fHojas fNodos = foldA23 fHojasRec fNodosDobles fNodosTriples
+      where fHojasRec =  \hoja -> Hoja (fHojas hoja)
+            fNodosDobles = \x a1 a2 ->  Dos (fNodos x) a1 a2
+            fNodosTriples = \x z a1 a2 a3 -> Tres (fNodos x) (fNodos z) a1 a2 a3 
 
 --Ejemplo de uso de mapA23.
 --Incrementa en 1 el valor de las hojas.
