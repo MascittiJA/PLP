@@ -81,7 +81,18 @@ incrementarHojas = mapA23 (+1) id
 --Trunca el árbol hasta un determinado nivel. Cuando llega a 0, reemplaza el resto del árbol por una hoja con el valor indicado.
 --Funciona para árboles infinitos.
 truncar::a->Integer->Arbol23 a b->Arbol23 a b
-truncar = undefined
+truncar valor nivel (Hoja a) = if nivel == 0
+                                then Hoja valor
+                                else Hoja a
+ 
+truncar valor nivel (Dos b1 a1 a2) = if nivel == 0
+                                      then  (Hoja valor)
+                                      else  (Dos b1 (truncar valor (nivel-1) a1) (truncar valor (nivel-1) a2))
+
+
+truncar valor nivel (Tres b1 b2 a1 a2 a3) = if nivel == 0
+                                      then  (Hoja valor)
+                                      else  (Tres b1 b2 (truncar valor (nivel-1) a1) (truncar valor (nivel-1) a2) (truncar valor (nivel-1) a3))
 
 --Evalúa las funciones tomando los valores de los hijos como argumentos.
 --En el caso de que haya 3 hijos, asocia a izquierda.
