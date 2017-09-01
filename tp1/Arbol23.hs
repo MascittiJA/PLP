@@ -96,7 +96,10 @@ truncar valor nivel (Tres b1 b2 a1 a2 a3) = if nivel == 0
 --Evalúa las funciones tomando los valores de los hijos como argumentos.
 --En el caso de que haya 3 hijos, asocia a izquierda.
 evaluar::Arbol23 a (a->a->a)->a
-evaluar = undefined
+evaluar = foldA23 fHoja fDos fTres
+          where fHoja = \x -> x
+                fDos = \func a1 a2 -> func a1 a2
+                fTres = \func1 func2 a1 a2 a3 -> func2 (func1 a1 a2) a3
 
 --Ejemplo:
 --evaluar (truncar 0 6 arbolito3) = 22 = (1*2-3)+(2*3-4)+(3*4-5)+(4*5-6)
