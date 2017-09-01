@@ -89,7 +89,6 @@ truncar valor nivel (Dos b1 a1 a2) = if nivel == 0
                                       then  (Hoja valor)
                                       else  (Dos b1 (truncar valor (nivel-1) a1) (truncar valor (nivel-1) a2))
 
-
 truncar valor nivel (Tres b1 b2 a1 a2 a3) = if nivel == 0
                                       then  (Hoja valor)
                                       else  (Tres b1 b2 (truncar valor (nivel-1) a1) (truncar valor (nivel-1) a2) (truncar valor (nivel-1) a3))
