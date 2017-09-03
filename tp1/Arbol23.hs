@@ -51,7 +51,7 @@ internos::Arbol23 a b->[b]
 internos = foldA23 fHoja fDos fTres 
             where fHoja = (\x -> []) 
                   fDos = (\x a1 a2 -> [x] ++ a1 ++ a2) 
-                  fTres = (\x z a1 a2 a3 -> [x,z] ++ a1 ++a2 ++a3)
+                  fTres = (\x z a1 a2 a3 -> [x,z] ++ a1 ++ a2 ++ a3)
 
 --Lista las hojas de izquierda a derecha.
 hojas::Arbol23 a b->[a]
@@ -92,6 +92,19 @@ truncar valor nivel (Dos b1 a1 a2) = if nivel == 0
 truncar valor nivel (Tres b1 b2 a1 a2 a3) = if nivel == 0
                                       then  (Hoja valor)
                                       else  (Tres b1 b2 (truncar valor (nivel-1) a1) (truncar valor (nivel-1) a2) (truncar valor (nivel-1) a3))
+
+truncar2::a->Integer->Arbol23 a b->Arbol23 a b
+truncar2 valor nivel arbol = foldA23 fHojas fNodosDobles fNodosTriples arbol
+      where fHojas = hola
+
+foldNat::b -> (b -> b) -> Nat -> b
+foldNat x f n = case n of Z   -> x
+                          S m -> f (rec m)
+                            where rec = foldNat x f
+
+hola::a->Integer->Arbol23 a b->Arbol23 a b
+hola valor nivel arbol = foldNat (\v -> Hoja v) (nicky) nivel
+  where nicky = 
 
 --Evalúa las funciones tomando los valores de los hijos como argumentos.
 --En el caso de que haya 3 hijos, asocia a izquierda.
