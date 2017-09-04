@@ -96,11 +96,18 @@ foldNat x f n = case n of 0 -> x
                           _ -> f (rec (n-1))
                             where rec = foldNat x f
 
-funcResult::a -> Integer -> (Arbol23 a b -> Arbol23 a b)
-funcResult valor nivel = foldNat (\x -> Hoja valor) (\x -> x) nivel
+--funcResult::a -> Integer -> (Arbol23 a b -> Arbol23 a b)
+--funcResult valor nivel = foldNat (\x -> Hoja valor) fArbol nivel
+--  where fArbol = (\f -> aux f)
 
-truncar2::a->Integer->Arbol23 a b->Arbol23 a b
-truncar2 valor nivel arbol = (funcResult valor nivel) arbol
+--aux::(Arbol23 a b -> Arbol23 a b) -> (Arbol23 a b -> Arbol23 a b)
+--aux (Hoja a) b = (\c -> Hoja c)
+--aux (Dos b1 a1 a2) b = (\c -> (Dos b1 (\a -> b) (\a -> b))
+--aux (Tres b1 b2 a1 a2 a3) b = (Tres b1 b2 (\a -> b))
+
+--truncar2::a->Integer->Arbol23 a b->Arbol23 a b
+--truncar2 valor nivel arbol = (funcResult valor nivel) arbol
+--HASTA ACA
 
 --main = show (truncar2 'n' 3 arbolito1)
 
