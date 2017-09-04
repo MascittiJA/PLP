@@ -11,7 +11,7 @@ padlength = 5
     
 padTree:: (Show a, Show b) => Int -> Int -> Bool -> (Arbol23 a b)-> String
 padTree nivel acum doPad t = case t of 
-				  (Hoja x) -> initialPad ++ stuff x
+                                  (Hoja x) -> initialPad ++ stuff x
                                   (Dos x i d) -> initialPad ++ stuff x ++ 
                                                  pad padlength ++ rec x False i ++ "\n" ++
                                                  rec x True d ++ "\n"
@@ -20,9 +20,9 @@ padTree nivel acum doPad t = case t of
                                                       pad levelPad ++ stuff y ++ pad padlength ++ rec x False m ++ "\n" ++
                                                       rec x True d ++ "\n" 
   where l = length . stuff
-	levelPad = (padlength*nivel + acum)
-	initialPad = (if doPad then pad levelPad else "")
-	rec x = padTree (nivel+1) (acum+l x)
+        levelPad = (padlength*nivel + acum)
+        initialPad = (if doPad then pad levelPad else "")
+        rec x = padTree (nivel+1) (acum+l x)
             
 stuff:: Show a => a -> String
 stuff x = if n > l then pad (n-l) ++ s else s
@@ -36,9 +36,6 @@ pad i = replicate i ' '
 {- Funciones pedidas. -}
 
 foldA23::(a -> r) -> ( b -> r -> r -> r ) -> ( b -> b -> r -> r -> r -> r ) -> Arbol23 a b -> r
---foldA23 fH fD fT Hoja a = fH a
---foldA23 fH fD fT Dos b A1 A2 = fD b (rec A1) (rec A2) where rec = foldA23 fH fD fT
---foldA23 fH fD fT Tres b b A1 A2 A3 = fT b b (rec A1) (rec A2) (rec A3)
 foldA23 fH fD fT arbol = case arbol of
                               Hoja a -> fH a
                               Dos b a1 a2 -> fD b (rec a1) (rec a2)
@@ -49,21 +46,21 @@ foldA23 fH fD fT arbol = case arbol of
 --Lista en preorden de los internos del árbol.
 internos::Arbol23 a b->[b]
 internos = foldA23 fHoja fDos fTres 
-            where fHoja = (\x -> []) 
+            where fHoja = (\_ -> []) 
                   fDos = (\x a1 a2 -> [x] ++ a1 ++ a2) 
-                  fTres = (\x z a1 a2 a3 -> [x,z] ++ a1 ++a2 ++a3)
+                  fTres = (\x z a1 a2 a3 -> [x,z] ++ a1 ++ a2 ++ a3)
 
 --Lista las hojas de izquierda a derecha.
 hojas::Arbol23 a b->[a]
 hojas = foldA23 fHoja fDos fTres 
             where fHoja = (\x -> [x]) 
-                  fDos = (\ x a1 a2 -> a1 ++ a2) 
-                  fTres = (\x z a1 a2 a3 -> a1 ++ a2 ++ a3)
+                  fDos = (\_ a1 a2 -> a1 ++ a2) 
+                  fTres = (\_ _ a1 a2 a3 -> a1 ++ a2 ++ a3)
 
 esHoja::Arbol23 a b->Bool
-esHoja (Hoja a) = True
-esHoja (Dos b a1 a2) = False
-esHoja (Tres b1 b2 a1 a2 a3) = False
+esHoja (Hoja _) = True
+esHoja (Dos _ _ _) = False
+esHoja (Tres _ _ _ _ _) = False
 
 -- recorrer el arbol e ir armando uno aplicando las funciones
 mapA23::(a->c)->(b->d)->Arbol23 a b->Arbol23 c d
@@ -89,15 +86,47 @@ truncar valor nivel (Dos b1 a1 a2) = if nivel == 0
                                       then  (Hoja valor)
                                       else  (Dos b1 (truncar valor (nivel-1) a1) (truncar valor (nivel-1) a2))
 
-
 truncar valor nivel (Tres b1 b2 a1 a2 a3) = if nivel == 0
                                       then  (Hoja valor)
                                       else  (Tres b1 b2 (truncar valor (nivel-1) a1) (truncar valor (nivel-1) a2) (truncar valor (nivel-1) a3))
 
+
+foldNat::b -> (b -> b) -> Integer -> b
+foldNat x f n = case n of 0 -> x
+                          _ -> f (rec (n-1))
+                            where rec = foldNat x f
+
+funcResult::a -> Integer -> (Arbol23 a b -> Arbol23 a b)
+funcResult valor nivel = foldNat (\x -> Hoja valor) (\x -> x) nivel
+
+truncar2::a->Integer->Arbol23 a b->Arbol23 a b
+truncar2 valor nivel arbol = (funcResult valor nivel) arbol
+
+--main = show (truncar2 'n' 3 arbolito1)
+
+--truncar2::a->Integer->Arbol23 a b->Arbol23 a b
+--truncar2 valor nivel arbol = foldA23 fHoja fDos fTres arbol
+--        where fHoja = (\a1 -> (funcResult valor a1 nivel))
+--              fDos = (\x a1 a2 -> (funcResult valor nivel (Dos x a1 a2) ))
+--              fTres = (\x z a1 a2 a3 -> (funcResult valor nivel (Tres x z a1 a2 a3) ))
+
+--funcResult::a->Integer->(Arbol23 a b -> Arbol23 a b)
+--funcResult valor nivel = foldNat (\ar -> (Hoja valor)) fRec nivel
+ --           where fRec = (\ar -> \br -> ar)
+
+--truncar2::a->Integer->Arbol23 a b->Arbol23 a b
+--truncar2 valor nivel arbol = (foldA23 fHoja fDos fTres) nivel valor
+--            where fHoja = (\a1 -> (\n -> v -> if n == 0 then (Hoja v) (n-1) v else (Hoja a1) (n-1) v))
+--                  fDos = (\b1 a1 a2 -> (\n -> v -> if n == 0 then (Hoja v) (n-1) v else (Dos b1 a1 a2) (n-1) v))
+--                  fTres = (\b1 b2 a1 a2 a3 -> (\n -> v -> if n == 0 then (Hoja v) (n-1) v else (Tres b1 b2 a1 a2 a3) (n-1) v))
+
 --Evalúa las funciones tomando los valores de los hijos como argumentos.
 --En el caso de que haya 3 hijos, asocia a izquierda.
 evaluar::Arbol23 a (a->a->a)->a
-evaluar = undefined
+evaluar = foldA23 fHoja fDos fTres
+          where fHoja = \x -> x
+                fDos = \func a1 a2 -> func a1 a2
+                fTres = \func1 func2 a1 a2 a3 -> func2 (func1 a1 a2) a3
 
 --Ejemplo:
 --evaluar (truncar 0 6 arbolito3) = 22 = (1*2-3)+(2*3-4)+(3*4-5)+(4*5-6)
@@ -118,4 +147,3 @@ arbolito3 = Dos (+) (Tres (*) (-) (Hoja 1) (Hoja 2) (Hoja 3)) (incrementarHojas 
 arbolito4::Arbol23 Int Char
 arbolito4 = Dos 'p' (Dos 'l' (Dos 'g' (Hoja 5) (Hoja 2)) (Tres 'r' 'a' (Hoja 0)(Hoja 1)(Hoja 12))) 
                     (Dos 'p' (Tres 'n' 'd' (Hoja (-3))(Hoja 4)(Hoja 9)) (Dos 'e' (Hoja 20)(Hoja 7)))
-
