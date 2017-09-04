@@ -96,36 +96,17 @@ foldNat x f n = case n of 0 -> x
                           _ -> f (rec (n-1))
                             where rec = foldNat x f
 
---funcResult::a -> Integer -> (Arbol23 a b -> Arbol23 a b)
---funcResult valor nivel = foldNat (\x -> Hoja valor) fArbol nivel
---  where fArbol = (\f -> aux f)
+funcResult::a -> Integer -> (Arbol23 a b -> Arbol23 a b)
+funcResult valor nivel = foldNat fLast fArbol nivel
+  where fLast =   (\arbol -> (Hoja valor))
+        fArbol =  (\f x -> (case x of
+                              Hoja c -> (Hoja c)
+                              Dos b a1 a2 -> Dos b (f a1) (f a2)
+                              Tres b1 b2 a1 a2 a3 -> Tres b1 b2 (f a1) (f a2) (f a3)))
 
---aux::(Arbol23 a b -> Arbol23 a b) -> (Arbol23 a b -> Arbol23 a b)
---aux (Hoja a) b = (\c -> Hoja c)
---aux (Dos b1 a1 a2) b = (\c -> (Dos b1 (\a -> b) (\a -> b))
---aux (Tres b1 b2 a1 a2 a3) b = (Tres b1 b2 (\a -> b))
 
---truncar2::a->Integer->Arbol23 a b->Arbol23 a b
---truncar2 valor nivel arbol = (funcResult valor nivel) arbol
---HASTA ACA
-
---main = show (truncar2 'n' 3 arbolito1)
-
---truncar2::a->Integer->Arbol23 a b->Arbol23 a b
---truncar2 valor nivel arbol = foldA23 fHoja fDos fTres arbol
---        where fHoja = (\a1 -> (funcResult valor a1 nivel))
---              fDos = (\x a1 a2 -> (funcResult valor nivel (Dos x a1 a2) ))
---              fTres = (\x z a1 a2 a3 -> (funcResult valor nivel (Tres x z a1 a2 a3) ))
-
---funcResult::a->Integer->(Arbol23 a b -> Arbol23 a b)
---funcResult valor nivel = foldNat (\ar -> (Hoja valor)) fRec nivel
- --           where fRec = (\ar -> \br -> ar)
-
---truncar2::a->Integer->Arbol23 a b->Arbol23 a b
---truncar2 valor nivel arbol = (foldA23 fHoja fDos fTres) nivel valor
---            where fHoja = (\a1 -> (\n -> v -> if n == 0 then (Hoja v) (n-1) v else (Hoja a1) (n-1) v))
---                  fDos = (\b1 a1 a2 -> (\n -> v -> if n == 0 then (Hoja v) (n-1) v else (Dos b1 a1 a2) (n-1) v))
---                  fTres = (\b1 b2 a1 a2 a3 -> (\n -> v -> if n == 0 then (Hoja v) (n-1) v else (Tres b1 b2 a1 a2 a3) (n-1) v))
+truncar2::a->Integer->Arbol23 a b->Arbol23 a b
+truncar2 valor nivel arbol = (funcResult valor nivel) arbol
 
 --Evalúa las funciones tomando los valores de los hijos como argumentos.
 --En el caso de que haya 3 hijos, asocia a izquierda.
