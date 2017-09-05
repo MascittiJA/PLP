@@ -77,18 +77,18 @@ incrementarHojas = mapA23 (+1) id
 
 --Trunca el árbol hasta un determinado nivel. Cuando llega a 0, reemplaza el resto del árbol por una hoja con el valor indicado.
 --Funciona para árboles infinitos.
-truncar::a->Integer->Arbol23 a b->Arbol23 a b
-truncar valor nivel (Hoja a) = if nivel == 0
-                                then Hoja valor
-                                else Hoja a
- 
-truncar valor nivel (Dos b1 a1 a2) = if nivel == 0
-                                      then  (Hoja valor)
-                                      else  (Dos b1 (truncar valor (nivel-1) a1) (truncar valor (nivel-1) a2))
-
-truncar valor nivel (Tres b1 b2 a1 a2 a3) = if nivel == 0
-                                      then  (Hoja valor)
-                                      else  (Tres b1 b2 (truncar valor (nivel-1) a1) (truncar valor (nivel-1) a2) (truncar valor (nivel-1) a3))
+--truncar2::a->Integer->Arbol23 a b->Arbol23 a b
+--truncar2 valor nivel (Hoja a) = if nivel == 0
+--                                then Hoja valor
+--                                else Hoja a
+-- 
+--truncar2 valor nivel (Dos b1 a1 a2) = if nivel == 0
+--                                      then  (Hoja valor)
+--                                      else  (Dos b1 (truncar valor (nivel-1) a1) (truncar valor (nivel-1) a2))
+--
+--truncar2 valor nivel (Tres b1 b2 a1 a2 a3) = if nivel == 0
+--                                      then  (Hoja valor)
+--                                      else  (Tres b1 b2 (truncar valor (nivel-1) a1) (truncar valor (nivel-1) a2) (truncar valor (nivel-1) a3))
 
 
 foldNat::b -> (b -> b) -> Integer -> b
@@ -96,17 +96,13 @@ foldNat x f n = case n of 0 -> x
                           _ -> f (rec (n-1))
                             where rec = foldNat x f
 
-funcResult::a -> Integer -> (Arbol23 a b -> Arbol23 a b)
-funcResult valor nivel = foldNat fLast fArbol nivel
-  where fLast =   (\arbol -> (Hoja valor))
-        fArbol =  (\f x -> (case x of
+truncar::a -> Integer -> Arbol23 a b -> Arbol23 a b
+truncar valor = foldNat fBase fRecu
+  where fBase = (const (Hoja valor))
+        fRecu =  (\f x -> (case x of
                               Hoja c -> (Hoja c)
                               Dos b a1 a2 -> Dos b (f a1) (f a2)
                               Tres b1 b2 a1 a2 a3 -> Tres b1 b2 (f a1) (f a2) (f a3)))
-
-
-truncar2::a->Integer->Arbol23 a b->Arbol23 a b
-truncar2 valor nivel arbol = (funcResult valor nivel) arbol
 
 --Evalúa las funciones tomando los valores de los hijos como argumentos.
 --En el caso de que haya 3 hijos, asocia a izquierda.
