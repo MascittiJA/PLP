@@ -76,7 +76,11 @@ vacio::Comp clave->Diccionario clave valor
 vacio clave = Dicc clave Nothing
 
 definir::clave->valor->Diccionario clave valor->Diccionario clave valor
-definir = undefined
+definir clave valor dicc = Dicc (cmp dicc) (insertar clave valor (cmp dicc) (estructura dicc))
+--definir --> Diccionario clave valor
+--insertar --> Estr clave valor
+--data Diccionario clave valor=Dicc (Comp clave) (Maybe (Estr clave valor))
+--type Estr clave valor = Arbol23 (clave,valor) clave
 
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
 obtener = undefined
