@@ -73,7 +73,7 @@ definirVarias = (flip.foldr.uncurry) definir
 {- Funciones a implementar. -}
 
 vacio::Comp clave->Diccionario clave valor
-vacio = undefined
+vacio clave = Dicc clave Nothing
 
 definir::clave->valor->Diccionario clave valor->Diccionario clave valor
 definir = undefined
