@@ -73,14 +73,26 @@ definirVarias = (flip.foldr.uncurry) definir
 {- Funciones a implementar. -}
 
 vacio::Comp clave->Diccionario clave valor
-vacio clave = Dicc clave Nothing
+vacio comparador = Dicc comparador Nothing
 
 definir::clave->valor->Diccionario clave valor->Diccionario clave valor
-definir clave valor dicc = Dicc (cmp dicc) (insertar clave valor (cmp dicc) (estructura dicc))
+definir clave valor dict = Dicc comparador (Just (rec))
+   where    rec = case (estructura dict) of 
+                        Just z -> (insertar clave valor comparador z)
+                        Nothing -> Hoja((clave, valor))
+            comparador = cmp dict
+
+--definir2::clave->valor->Diccionario clave valor->Diccionario clave valor
+--definir2 clave valor dicc = Dicc (cmp dicc) (Just (insertar clave valor (cmp dicc) (lala)))
+--    where lala = case estructura dicc of
+--            Just n -> n
+--            Nothing -> n
+-- 
+--insertar::clave->valor->Comp clave->Estr clave valor-> Estr clave valor
 --definir --> Diccionario clave valor
---insertar --> Estr clave valor
 --data Diccionario clave valor=Dicc (Comp clave) (Maybe (Estr clave valor))
 --type Estr clave valor = Arbol23 (clave,valor) clave
+--estructura :: Maybe (Estr clave valor)
 
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
 obtener = undefined
