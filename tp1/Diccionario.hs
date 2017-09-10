@@ -1,5 +1,6 @@
 module Diccionario (Diccionario, vacio, definir, definirVarias, obtener, claves) where
 
+import Data.Char
 import Data.Maybe
 import Data.List
 import Arbol23
@@ -106,11 +107,11 @@ obtenerClave clave comparador a23 = case a23 of
 						else obtenerClave clave comparador a2
 	{- Si es arbol Tres me fijo por que rama seguir 
 		Si la comparacion da con c1 sigo buscando por el medio -}
-	Tres c1 c2 a1 a2 a3 -> if comparador c1 clave
-						then obtenerClave clave comparador a3
-						else if comparador c2 clave
+	Tres c1 c2 a1 a2 a3 -> if comparador clave c1
+						then obtenerClave clave comparador a1
+						else if comparador clave c2
 							then obtenerClave clave comparador a2
-							else obtenerClave clave comparador a1
+							else obtenerClave clave comparador a3
 
 
 claves::Diccionario clave valor->[clave]
