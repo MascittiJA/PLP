@@ -18,7 +18,6 @@ búsquedaDelTesoro pista esTesoro dicc =
         Just z -> búsquedaDelTesoro z esTesoro dicc
         Nothing -> Nothing
 
---(obtener pista dicc)
 {-
 type Estr clave valor = Arbol23 (clave,valor) clave
 data Diccionario clave valor = Dicc {cmp :: Comp clave, estructura :: Maybe (Estr clave valor)}
