@@ -1,0 +1,5 @@
+Resta:
+- Ejercicio 9
+- Ejercicio 10
+- Comentar todas las funciones
+- Implementar ejemplos para cada funcion para exhibir la funcionalidad solicitada
