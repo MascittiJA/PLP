@@ -10,14 +10,13 @@ import Data.Char
 
 
 búsquedaDelTesoro::Eq a=>a->(a->Bool)->Diccionario a a->Maybe a 
-búsquedaDelTesoro pista esTesoro dicc = undefined
-{-    if (esTesoro pista) then 
-        Just pista else
-        if (nuevaPista == Nothing) then 
-          Nothing 
-        else 
-          (búsquedaDelTesoro nuevaPista esTesoro dicc)
-    where nuevaPista = (obtener pista dicc)-}
+búsquedaDelTesoro pista esTesoro dicc = 
+    if (esTesoro pista) then 
+      Just pista 
+    else
+      case (obtener pista dicc) of 
+        Just z -> búsquedaDelTesoro z esTesoro dicc
+        Nothing -> Nothing
 
 --(obtener pista dicc)
 {-
