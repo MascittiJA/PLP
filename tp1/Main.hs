@@ -73,6 +73,7 @@ testsEj2 = test [
   [True,False,True] ~=? internos arbolito2,
   [-1,0,-2,4] ~=? (hojas arbolito2),
   [1,2,3,2,3,4,3,4,5,4] ~=? take 10 (hojas arbolito3),
+  "plgrapnde" ~=? (internos arbolito4),
   [5,2,0,1,12,-3,4,9,20,7] ~=? (hojas arbolito4)
   ]
 
@@ -89,7 +90,7 @@ testsEj5 = test [
   ]
 
 testsEj6 = test [
-  0 ~=? 0 --Cambiar esto por tests verdaderos.
+  [] ~=? claves (vacio (<))
   ]
 
 testsEj7 = test [
