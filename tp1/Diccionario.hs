@@ -115,7 +115,9 @@ obtenerClave clave comparador a23 = case a23 of
 
 
 claves::Diccionario clave valor->[clave]
-claves = undefined
+claves dict = case (estructura dict) of
+				Just z -> internos z
+				Nothing -> []
 
 {- Diccionarios de prueba: -}
 
