@@ -95,23 +95,37 @@ obtener clave dict = case (estructura dict) of
             Nothing -> Nothing
 
 obtenerClave::Eq clave=>clave->Comp clave->Estr clave valor->Maybe valor
-obtenerClave clave comparador a23 = case a23 of
-    {- Si llegue a una hoja me fijo si tiene la clave que busco, si no devuelvo Nothing -}
+obtenerClave clave comparador a23 = 
+    foldA23 fHoja fDos fTres 
+            where fHoja = (\(c,v) -> if clave == c then Just v else Nothing)
+                  fDos = (\c a1 a2 ->  if comparador clave c then a1 else a2) 
+                  fTres = (\c1 c2 a1 a2 a3 -> if comparador clave c1 then a1 else 
+                                                if comparador clave c2 then a2 else a3) 
+
+    {-
+    -- Si llegue a una hoja me fijo si tiene la clave que busco, si no devuelvo Nothing
     Hoja (c,v) -> if clave == c 
                     then Just v
                     else Nothing
-    {- Si es arbol Dos me fijo por que rama seguir 
-        Si la comparacion da con c sigo buscando del lado izquierdo -}
+    -- Si es arbol Dos me fijo por que rama seguir 
+    --    Si la comparacion da con c sigo buscando del lado izquierdo
     Dos c a1 a2 -> if comparador clave c
                         then obtenerClave clave comparador a1
                         else obtenerClave clave comparador a2
-    {- Si es arbol Tres me fijo por que rama seguir 
-        Si la comparacion da con c1 sigo buscando por el medio -}
+    -- Si es arbol Tres me fijo por que rama seguir 
+    --    Si la comparacion da con c1 sigo buscando por el medio
     Tres c1 c2 a1 a2 a3 -> if comparador clave c1
                         then obtenerClave clave comparador a1
                         else if comparador clave c2
                             then obtenerClave clave comparador a2
                             else obtenerClave clave comparador a3
+                            -}
+
+internos::Arbol23 a b->[b]
+internos = foldA23 fHoja fDos fTres 
+            where fHoja = (\_ -> []) 
+                  fDos = (\x a1 a2 -> [x] ++ a1 ++ a2) 
+                  fTres = (\x z a1 a2 a3 -> [x,z] ++ a1 ++ a2 ++ a3)
 
 
 claves::Diccionario clave valor->[clave]

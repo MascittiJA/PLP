@@ -8,8 +8,27 @@ import Data.Char
 
 {- Función a implementar. -}
 
+
 búsquedaDelTesoro::Eq a=>a->(a->Bool)->Diccionario a a->Maybe a 
-búsquedaDelTesoro = undefined
+búsquedaDelTesoro pista esTesoro dicc = undefined
+
+--(obtener pista dicc)
+{-
+type Estr clave valor = Arbol23 (clave,valor) clave
+data Diccionario clave valor = Dicc {cmp :: Comp clave, estructura :: Maybe (Estr clave valor)}
+
+iterate :: (a -> a) -> a -> [a]
+example: iterate (2*) 1 = [1,2,4,8,16,32,64...
+
+(>>=) :: (Monad m) => m a -> (a -> m b) -> m b 
+(>>=) :: [a] -> (a -> [b]) -> [b]
+
+ejemplo (>>=):
+[x*2 | x<-[1..10], odd x] es lo mismo que:
+[1..10] >>= (\x -> if odd x then [x*2] else [])
+
+obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
+-}
 
 {- Diccionarios de prueba: -}
 
