@@ -85,7 +85,7 @@ definir clave valor dict = Dicc comparador (Just (rec))
 {- Lo que contenga como parámetro el Just dependerá de si la estructura del diccionario
 pasado como parámetro es Nothing, o si es Just z con z un árbol -}
    where    rec = case (estructura dict) of 
-                        {-En ese caso se necesitará una Hoja-}
+                        {-En ese caso, se necesitará una Hoja-}
                         Just z -> (insertar clave valor comparador z)
                         {-En ese caso, se hará uso de la función insertar-}
                         Nothing -> Hoja((clave, valor))
@@ -102,11 +102,11 @@ obtener clave dict = case (estructura dict) of
 
 obtenerClave::Eq clave=>clave->Comp clave->Estr clave valor->Maybe valor
 obtenerClave clave comparador a23 = 
-    foldA23 fHoja fDos fTres 
+    foldA23 fHoja fDos fTres a23
             where fHoja = (\(c,v) -> if clave == c then Just v else Nothing)
-                  fDos = (\c a1 a2 ->  if comparador clave c then a1 else a2) 
+                  fDos = (\c a1 a2 -> if comparador clave c then a1 else a2) 
                   fTres = (\c1 c2 a1 a2 a3 -> if comparador clave c1 then a1 else 
-                                                if comparador clave c2 then a2 else a3) 
+                                                (if comparador clave c2 then a2 else a3)) 
 
     {-
     -- Si llegue a una hoja me fijo si tiene la clave que busco, si no devuelvo Nothing
@@ -126,13 +126,6 @@ obtenerClave clave comparador a23 =
                             then obtenerClave clave comparador a2
                             else obtenerClave clave comparador a3
                             -}
-
-internos::Arbol23 a b->[b]
-internos = foldA23 fHoja fDos fTres 
-            where fHoja = (\_ -> []) 
-                  fDos = (\x a1 a2 -> [x] ++ a1 ++ a2) 
-                  fTres = (\x z a1 a2 a3 -> [x,z] ++ a1 ++ a2 ++ a3)
-
 
 claves::Diccionario clave valor->[clave]
 claves dict = case (estructura dict) of
