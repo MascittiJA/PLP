@@ -34,7 +34,10 @@ pad:: Int -> String
 pad i = replicate i ' '
 
 {- Funciones pedidas. -}
-
+{-
+ En el foldA23 buscamos desarmar recursivamente la estructura de estos tipos de arborles
+ Para eso definimos el comportamiento para cada uno de sus constructores
+-}
 foldA23::(a -> r) -> ( b -> r -> r -> r ) -> ( b -> b -> r -> r -> r -> r ) -> Arbol23 a b -> r
 foldA23 fH fD fT arbol = case arbol of
                               Hoja a -> fH a
@@ -44,6 +47,12 @@ foldA23 fH fD fT arbol = case arbol of
 
 
 --Lista en preorden de los internos del árbol.
+{-
+ Para listar los nodos internos del arbol aprovechamos el comportamiento recursivo del foldA23
+ definiendo las funciones necesarias para cada uno de los constructores.
+ Como queremos solo los nodos internos, las hojas no tienen relevancia y cuando se trata de un
+ nodo con 2 o 3 hijos, primero va el nodo y luego sus hijos de izquierda a derecha.
+-}
 internos::Arbol23 a b->[b]
 internos = foldA23 fHoja fDos fTres 
             where fHoja = (\_ -> []) 
@@ -51,18 +60,32 @@ internos = foldA23 fHoja fDos fTres
                   fTres = (\x z a1 a2 a3 -> [x,z] ++ a1 ++ a2 ++ a3)
 
 --Lista las hojas de izquierda a derecha.
+{-
+ Nuevamente aprovechamos la estructura recursiva del foldA23, pero ahora solo para listar las
+ hojas del mismo.
+-}
 hojas::Arbol23 a b->[a]
 hojas = foldA23 fHoja fDos fTres 
             where fHoja = (\x -> [x]) 
                   fDos = (\_ a1 a2 -> a1 ++ a2) 
                   fTres = (\_ _ a1 a2 a3 -> a1 ++ a2 ++ a3)
 
+                  
+{-
+ Funcion simple que devuelve TRUE solo si es un árbol con una única hoja
+-}
 esHoja::Arbol23 a b->Bool
 esHoja (Hoja _) = True
 esHoja (Dos _ _ _) = False
 esHoja (Tres _ _ _ _ _) = False
 
 -- recorrer el arbol e ir armando uno aplicando las funciones
+{-
+ Utilizamos la estructura recursiva del foldA23 y definimos como es la aplicacion de las funciones
+ para cada constructor del arbol.
+ Tenemos una funcion para las hojas y otra para los nodos, que se aplican respectivamente en 
+ cada constructor
+-}
 mapA23::(a->c)->(b->d)->Arbol23 a b->Arbol23 c d
 mapA23 fHojas fNodos = foldA23 fHojasRec fNodosDobles fNodosTriples
       where fHojasRec =  \hoja -> Hoja (fHojas hoja)
@@ -71,10 +94,15 @@ mapA23 fHojas fNodos = foldA23 fHojasRec fNodosDobles fNodosTriples
 
 --Ejemplo de uso de mapA23.
 --Incrementa en 1 el valor de las hojas.
+{-
+ Aprovechando el comportamiento de mapA23. Solo es necesario definir dos funciones, y como queremos
+ incrementar en 1 solo a las hojas, vamos a utilizar la funcion (+1) para las hojas y la identidad
+ para el resto de los nodos del árbol
+-}
 incrementarHojas::Num a =>Arbol23 a b->Arbol23 a b
 incrementarHojas = mapA23 (+1) id
 
-
+-- Fold para naturales
 foldNat::b -> (b -> b) -> Integer -> b
 foldNat x f n = case n of 0 -> x
                           _ -> f (rec (n-1))
@@ -82,6 +110,11 @@ foldNat x f n = case n of 0 -> x
 
 --Trunca el árbol hasta un determinado nivel. Cuando llega a 0, reemplaza el resto del árbol por una hoja con el valor indicado.
 --Funciona para árboles infinitos.
+{-
+ Utilizando foldNat y una funcion que recursivamente se mete en la estructura del arbol, cuando llega al valor indicado como 
+ parámetro de entrada se devuelve un arbol Hoja con el otro parámetro de la función, que pasa a ser parte de nuestro nuevo arbol sin
+ seguir recorriendo el resto.
+-}
 truncar::a -> Integer -> Arbol23 a b -> Arbol23 a b
 truncar valor = foldNat fBase fRecu
   where fBase = (const (Hoja valor))
@@ -92,6 +125,10 @@ truncar valor = foldNat fBase fRecu
 
 --Evalúa las funciones tomando los valores de los hijos como argumentos.
 --En el caso de que haya 3 hijos, asocia a izquierda.
+{-
+  Evalua las funciones que están definidas en los nodos internos del arbol, utilizando los respectivos hijos
+  de ese nodo como parámetros de la funcion.
+-}
 evaluar::Arbol23 a (a->a->a)->a
 evaluar = foldA23 fHoja fDos fTres
           where fHoja = \x -> x

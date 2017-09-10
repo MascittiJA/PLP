@@ -72,8 +72,10 @@ definirVarias::[(clave,valor)]->Diccionario clave valor->Diccionario clave valor
 definirVarias = (flip.foldr.uncurry) definir
 
 {- Funciones a implementar. -}
-
-vacio::Comp clave->Diccionario clave valor
+{-
+  Creo un diccionario vacío
+-}
+vacio::Comp clave -> Diccionario clave valor
 vacio comparador = Dicc comparador Nothing
 
 definir::clave->valor->Diccionario clave valor->Diccionario clave valor
@@ -89,6 +91,10 @@ pasado como parámetro es Nothing, o si es Just z con z un árbol -}
                         Nothing -> Hoja((clave, valor))
             comparador = cmp dict
 
+{-
+  Obtengo el valor asociado a una clave en el diccionario. Si la estructura del diccionario es un arbol, busco dentro del
+  mismo el valor asociado a dicha calve, si es Nothing no hay nada para buscar
+-}
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
 obtener clave dict = case (estructura dict) of
             Just z -> obtenerClave clave (cmp dict) z   
