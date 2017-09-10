@@ -89,7 +89,29 @@ definir clave valor dict = Dicc comparador (Just (rec))
 --estructura :: Maybe (Estr clave valor)
 
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
-obtener = undefined
+obtener clave dict = case (estructura dict) of
+			Just z -> obtenerClave clave (cmp dict) z   
+			Nothing -> Nothing
+
+obtenerClave::Eq clave=>clave->Comp clave->Estr clave valor->Maybe valor
+obtenerClave clave comparador a23 = case a23 of
+	{- Si llegue a una hoja me fijo si tiene la clave que busco, si no devuelvo Nothing -}
+	Hoja (c,v) -> if clave == c 
+					then Just v
+					else Nothing
+	{- Si es arbol Dos me fijo por que rama seguir 
+		Si la comparacion da con c sigo buscando del lado izquierdo -}
+	Dos c a1 a2 -> if comparador clave c
+						then obtenerClave clave comparador a1
+						else obtenerClave clave comparador a2
+	{- Si es arbol Tres me fijo por que rama seguir 
+		Si la comparacion da con c1 sigo buscando por el medio -}
+	Tres c1 c2 a1 a2 a3 -> if comparador c1 clave
+						then obtenerClave clave comparador a3
+						else if comparador c2 clave
+							then obtenerClave clave comparador a2
+							else obtenerClave clave comparador a1
+
 
 claves::Diccionario clave valor->[clave]
 claves = undefined
