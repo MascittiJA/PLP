@@ -119,13 +119,6 @@ claves dict = case (estructura dict) of
                 Just z -> internos z
                 Nothing -> []
 
-{-
-type Comp clave = clave->clave->Bool
-type Estr clave valor = Arbol23 (clave,valor) clave
-
-data Diccionario clave valor = Dicc {cmp :: Comp clave, estructura :: Maybe (Estr clave valor)}
--}
-
 {- Diccionarios de prueba: -}
 
 dicc1::Diccionario Int String
