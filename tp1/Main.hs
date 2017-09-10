@@ -63,10 +63,17 @@ allTests = test [
   ]
 
 testsEj2 = test [
+    True ~=? (esHoja (Hoja 28)),
+  False ~=? (esHoja arbolito1),
+  False ~=? (esHoja arbolito2),
+  False ~=? (esHoja arbolito3),
+  False ~=? (esHoja arbolito4),
   [0,1,2,3,4,5,6,7] ~=? internos arbolito1,
   "abcdefghi" ~=? hojas arbolito1,
   [True,False,True] ~=? internos arbolito2,
-  [1,2,3,2,3,4,3,4,5,4] ~=? take 10 (hojas arbolito3)
+  [-1,0,-2,4] ~=? (hojas arbolito2),
+  [1,2,3,2,3,4,3,4,5,4] ~=? take 10 (hojas arbolito3),
+  [5,2,0,1,12,-3,4,9,20,7] ~=? (hojas arbolito4)
   ]
 
 testsEj3 = test [
