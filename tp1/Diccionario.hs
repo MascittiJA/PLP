@@ -20,7 +20,7 @@ insertar::clave->valor->Comp clave->Estr clave valor-> Estr clave valor
 insertar c v comp a23 = interceptar (insertarYPropagar c v comp a23) id (\s1 (c1, s2)->Dos c1 s1 s2)
 
 --Maneja el caso de que la segunda componente sea Nothing.
-interceptar::(a,Maybe b)->(a->c)->(a->b->c)->c
+ ::(a,Maybe b)->(a->c)->(a->b->c)->c
 interceptar (x,y) f1 f2 = case y of
                    Nothing -> f1 x
                    Just z -> f2 x z
@@ -77,17 +77,17 @@ vacio::Comp clave->Diccionario clave valor
 vacio comparador = Dicc comparador Nothing
 
 definir::clave->valor->Diccionario clave valor->Diccionario clave valor
+{- Al definir un (clave, valor), creo un diccionario donde el segundo parametro de tipo Maybe 
+siempre será de tipo Just.-}
 definir clave valor dict = Dicc comparador (Just (rec))
+{- Lo que contenga como parámetro el Just dependerá de si la estructura del diccionario
+pasado como parámetro es Nothing, o si es Just z con z un árbol -}
    where    rec = case (estructura dict) of 
+                        {-En ese caso se necesitará una Hoja-}
                         Just z -> (insertar clave valor comparador z)
+                        {-En ese caso, se hará uso de la función insertar-}
                         Nothing -> Hoja((clave, valor))
             comparador = cmp dict
-
---insertar::clave->valor->Comp clave->Estr clave valor-> Estr clave valor
---definir --> Diccionario clave valor
---data Diccionario clave valor=Dicc (Comp clave) (Maybe (Estr clave valor))
---type Estr clave valor = Arbol23 (clave,valor) clave
---estructura :: Maybe (Estr clave valor)
 
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
 obtener clave dict = case (estructura dict) of
