@@ -20,7 +20,7 @@ insertar::clave->valor->Comp clave->Estr clave valor-> Estr clave valor
 insertar c v comp a23 = interceptar (insertarYPropagar c v comp a23) id (\s1 (c1, s2)->Dos c1 s1 s2)
 
 --Maneja el caso de que la segunda componente sea Nothing.
- ::(a,Maybe b)->(a->c)->(a->b->c)->c
+interceptar ::(a,Maybe b)->(a->c)->(a->b->c)->c
 interceptar (x,y) f1 f2 = case y of
                    Nothing -> f1 x
                    Just z -> f2 x z
@@ -91,33 +91,40 @@ pasado como parámetro es Nothing, o si es Just z con z un árbol -}
 
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
 obtener clave dict = case (estructura dict) of
-			Just z -> obtenerClave clave (cmp dict) z   
-			Nothing -> Nothing
+            Just z -> obtenerClave clave (cmp dict) z   
+            Nothing -> Nothing
 
 obtenerClave::Eq clave=>clave->Comp clave->Estr clave valor->Maybe valor
 obtenerClave clave comparador a23 = case a23 of
-	{- Si llegue a una hoja me fijo si tiene la clave que busco, si no devuelvo Nothing -}
-	Hoja (c,v) -> if clave == c 
-					then Just v
-					else Nothing
-	{- Si es arbol Dos me fijo por que rama seguir 
-		Si la comparacion da con c sigo buscando del lado izquierdo -}
-	Dos c a1 a2 -> if comparador clave c
-						then obtenerClave clave comparador a1
-						else obtenerClave clave comparador a2
-	{- Si es arbol Tres me fijo por que rama seguir 
-		Si la comparacion da con c1 sigo buscando por el medio -}
-	Tres c1 c2 a1 a2 a3 -> if comparador clave c1
-						then obtenerClave clave comparador a1
-						else if comparador clave c2
-							then obtenerClave clave comparador a2
-							else obtenerClave clave comparador a3
+    {- Si llegue a una hoja me fijo si tiene la clave que busco, si no devuelvo Nothing -}
+    Hoja (c,v) -> if clave == c 
+                    then Just v
+                    else Nothing
+    {- Si es arbol Dos me fijo por que rama seguir 
+        Si la comparacion da con c sigo buscando del lado izquierdo -}
+    Dos c a1 a2 -> if comparador clave c
+                        then obtenerClave clave comparador a1
+                        else obtenerClave clave comparador a2
+    {- Si es arbol Tres me fijo por que rama seguir 
+        Si la comparacion da con c1 sigo buscando por el medio -}
+    Tres c1 c2 a1 a2 a3 -> if comparador clave c1
+                        then obtenerClave clave comparador a1
+                        else if comparador clave c2
+                            then obtenerClave clave comparador a2
+                            else obtenerClave clave comparador a3
 
 
 claves::Diccionario clave valor->[clave]
 claves dict = case (estructura dict) of
-				Just z -> internos z
-				Nothing -> []
+                Just z -> internos z
+                Nothing -> []
+
+{-
+type Comp clave = clave->clave->Bool
+type Estr clave valor = Arbol23 (clave,valor) clave
+
+data Diccionario clave valor = Dicc {cmp :: Comp clave, estructura :: Maybe (Estr clave valor)}
+-}
 
 {- Diccionarios de prueba: -}
 
