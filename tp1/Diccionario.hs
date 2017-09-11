@@ -96,36 +96,22 @@ pasado como parámetro es Nothing, o si es Just z con z un árbol -}
   mismo el valor asociado a dicha calve, si es Nothing no hay nada para buscar
 -}
 obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
-obtener clave dict = case (estructura dict) of
-            Just z -> obtenerClave clave (cmp dict) z   
-            Nothing -> Nothing
+obtener clave dict = (>>=) (estructura dict) f
+            where f = \x -> obtenerClave clave (cmp dict) x
 
 obtenerClave::Eq clave=>clave->Comp clave->Estr clave valor->Maybe valor
 obtenerClave clave comparador a23 = 
     foldA23 fHoja fDos fTres a23
-            where fHoja = (\(c,v) -> if clave == c then Just v else Nothing)
-                  fDos = (\c a1 a2 -> if comparador clave c then a1 else a2) 
-                  fTres = (\c1 c2 a1 a2 a3 -> if comparador clave c1 then a1 else 
+            where 
+                {- Si llegue a una hoja me fijo si tiene la clave que busco, si no devuelvo Nothing -}
+                fHoja = (\(c,v) -> if clave == c then Just v else Nothing)
+                {- Si es arbol Dos me fijo por que rama seguir 
+                -- Si la comparacion da con c sigo buscando del lado izquierdo -}                  
+                fDos = (\c a1 a2 -> if comparador clave c then a1 else a2) 
+                {- Si es arbol Tres me fijo por que rama seguir 
+                -- Si la comparacion da con c1 sigo buscando por el medio -}
+                fTres = (\c1 c2 a1 a2 a3 -> if comparador clave c1 then a1 else 
                                                 (if comparador clave c2 then a2 else a3)) 
-
-    {-
-    -- Si llegue a una hoja me fijo si tiene la clave que busco, si no devuelvo Nothing
-    Hoja (c,v) -> if clave == c 
-                    then Just v
-                    else Nothing
-    -- Si es arbol Dos me fijo por que rama seguir 
-    --    Si la comparacion da con c sigo buscando del lado izquierdo
-    Dos c a1 a2 -> if comparador clave c
-                        then obtenerClave clave comparador a1
-                        else obtenerClave clave comparador a2
-    -- Si es arbol Tres me fijo por que rama seguir 
-    --    Si la comparacion da con c1 sigo buscando por el medio
-    Tres c1 c2 a1 a2 a3 -> if comparador clave c1
-                        then obtenerClave clave comparador a1
-                        else if comparador clave c2
-                            then obtenerClave clave comparador a2
-                            else obtenerClave clave comparador a3
-                            -}
 
 claves::Diccionario clave valor->[clave]
 claves dict = case (estructura dict) of
