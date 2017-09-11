@@ -78,15 +78,31 @@ testsEj2 = test [
   ]
 
 testsEj3 = test [
-  [0,1,-1,5] ~=? hojas (incrementarHojas arbolito2)
+  [0,1,-1,5] ~=? hojas (incrementarHojas arbolito2),
+  [1,2,0,6] ~=? hojas (incrementarHojas (incrementarHojas arbolito2)),
+  [2,3,1,7] ~=? hojas (incrementarHojas (incrementarHojas (incrementarHojas arbolito2)))
   ]
 
 testsEj4 = test [
+  [] ~=? internos (truncar 'a' 0 arbolito1),
+  "a" ~=? hojas (truncar 'a' 0 arbolito1),
+  [0,1] ~=? internos (truncar 'a' 1 arbolito1),
+  "aaa" ~=? hojas (truncar 'a' 1 arbolito1),
+  [0,1,2,3,4,6] ~=? internos (truncar 'a' 2 arbolito1),
+  "aaaaaaa" ~=? hojas (truncar 'a' 2 arbolito1),
+  [0,1,2,3,4,5,6,7] ~=? internos (truncar 'a' 3 arbolito1),
+  "abcdaagaa" ~=? hojas (truncar 'a' 3 arbolito1),
+  [0,1,2,3,4,5,6,7] ~=? internos (truncar 'a' 10 arbolito1),
+  "abcdefghi" ~=? hojas (truncar 'a' 10 arbolito1),
   [1,2,3,2,3,4,3,4,5,4,5,6,0,0,0,0,0] ~=? hojas (truncar 0 6 arbolito3)
   ]
 
 testsEj5 = test [
-  22 ~=? evaluar (truncar 0 6 arbolito3)
+  -1 ~=? evaluar (truncar 0 3 arbolito3),
+  1 ~=? evaluar (truncar 0 4 arbolito3),
+  8 ~=? evaluar (truncar 0 5 arbolito3),
+  22 ~=? evaluar (truncar 0 6 arbolito3),
+  45 ~=? evaluar (truncar 0 7 arbolito3)
   ]
 
 testsEj6 = test [
@@ -94,7 +110,6 @@ testsEj6 = test [
   ]
 
 testsEj7 = test [
-  [] ~=? claves (vacio (max)),
   [1] ~=? claves (definir 1 111 (vacio (>))),
   [1,2] ~=? claves (definir 2 222 (definir 1 111 (vacio (<))))
   ]
@@ -109,7 +124,10 @@ testsEj8 = test [
   ]
   
 testsEj9 = test [
-  0 ~=? 0 --Cambiar esto por tests verdaderos.
+  [] ~=? claves (vacio (max)),
+  [-10,0,2,9,15] ~=? claves dicc1,
+  ["auto","calle","casa","escalera","inicio","ropero"] ~=? claves dicc2,
+  [15,-10,0,2,9] ~=? claves dicc3
   ]
   
 testsEj10 = test [
