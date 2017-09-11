@@ -63,7 +63,7 @@ allTests = test [
   ]
 
 testsEj2 = test [
-    True ~=? (esHoja (Hoja 28)),
+  True ~=? (esHoja (Hoja 28)),
   False ~=? (esHoja arbolito1),
   False ~=? (esHoja arbolito2),
   False ~=? (esHoja arbolito3),
@@ -90,15 +90,18 @@ testsEj5 = test [
   ]
 
 testsEj6 = test [
-  [] ~=? claves (vacio (<))
+  0 ~=? 0 --Cambiar esto por tests verdaderos.
+--  [] ~=? claves (vacio (<))
   ]
 
 testsEj7 = test [
-  0 ~=? 0 --Cambiar esto por tests verdaderos.
+  [1] ~=? claves (definir 1 111 (vacio (<))),
+  [1,2] ~=? claves (definir 2 222 (definir 1 111 (vacio (<))))
   ]
 
 testsEj8 = test [
   0 ~=? 0 --Cambiar esto por tests verdaderos.
+--   (Just 222)  ~=? obtener (definir 2 222 (definir 1 111 (vacio (<))))
   ]
   
 testsEj9 = test [
