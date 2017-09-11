@@ -94,14 +94,18 @@ testsEj6 = test [
   ]
 
 testsEj7 = test [
-  [1] ~=? claves (definir 1 111 (vacio (<))),
+  [] ~=? claves (vacio (max)),
+  [1] ~=? claves (definir 1 111 (vacio (>))),
   [1,2] ~=? claves (definir 2 222 (definir 1 111 (vacio (<))))
   ]
 
 testsEj8 = test [
-  0 ~=? 0, --Cambiar esto por tests verdaderos.
   Just "Hola" ~=? obtener 0 dicc1, 
-  Just 222  ~=? obtener 2 (definir 2 222 (definir 1 111 (vacio (<))))
+  Just 222  ~=? obtener 2 (definir 2 222 (definir 1 111 (vacio (<)))),
+  Nothing ~=? obtener 1 dicc1,
+  Nothing ~=? obtener 1 dicc3,
+  Nothing ~=? obtener "hola" dicc2,
+  Just "flores" ~=? obtener "auto" dicc2
   ]
   
 testsEj9 = test [
