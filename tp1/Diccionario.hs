@@ -129,7 +129,7 @@ obtenerClave clave comparador a23 =
 
 claves::Diccionario clave valor->[clave]
 claves dict = case (estructura dict) of
-                Just z -> internos z
+                Just z -> internos z ++ map (\(c,v) -> c) (hojas z)
                 Nothing -> []
 
 {- Diccionarios de prueba: -}
