@@ -84,15 +84,17 @@ testsEj3 = test [
   ]
 
 testsEj4 = test [
-  [] ~=? internos (truncar 'a' 0 arbolito1),
-  "a" ~=? hojas (truncar 'a' 0 arbolito1),
-  [0,1] ~=? internos (truncar 'a' 1 arbolito1),
-  "aaa" ~=? hojas (truncar 'a' 1 arbolito1),
-  [0,1,2,3,4,6] ~=? internos (truncar 'a' 2 arbolito1),
-  "aaaaaaa" ~=? hojas (truncar 'a' 2 arbolito1),
-  [0,1,2,3,4,5,6,7] ~=? internos (truncar 'a' 3 arbolito1),
-  "abcdaagaa" ~=? hojas (truncar 'a' 3 arbolito1),
-  [0,1,2,3,4,5,6,7] ~=? internos (truncar 'a' 10 arbolito1),
+  [] ~=? internos (truncar '1' 0 arbolito1),
+  "1" ~=? hojas (truncar '1' 0 arbolito1),
+  [0,1] ~=? internos (truncar '1' 1 arbolito1),
+  "111" ~=? hojas (truncar '1' 1 arbolito1),
+  [0,1,2,3,4,6] ~=? internos (truncar '1' 2 arbolito1),
+  "1111111" ~=? hojas (truncar '1' 2 arbolito1),
+  [0,1,2,3,4,5,6,7] ~=? internos (truncar '1' 3 arbolito1),
+  "abcd11g11" ~=? hojas (truncar '1' 3 arbolito1),
+  [0,1,2,3,4,5,6,7] ~=? internos (truncar '1' 4 arbolito1),
+  "abcdefghi" ~=? hojas (truncar 'a' 4 arbolito1),
+  [0,1,2,3,4,5,6,7] ~=? internos (truncar '1' 10 arbolito1),
   "abcdefghi" ~=? hojas (truncar 'a' 10 arbolito1),
   [1,2,3,2,3,4,3,4,5,4,5,6,0,0,0,0,0] ~=? hojas (truncar 0 6 arbolito3)
   ]
