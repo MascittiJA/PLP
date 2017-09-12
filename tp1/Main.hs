@@ -10,17 +10,18 @@ import Data.Char
 
 
 búsquedaDelTesoro::Eq a=>a->(a->Bool)->Diccionario a a->Maybe a 
-búsquedaDelTesoro pista esTesoro dicc = 
-  take 1 (dropWhile f lista)
+búsquedaDelTesoro pista esTesoro dicc = head (dropWhile f lista)
     where lista = iterate (damePistas dicc) (Just pista) 
-          f (Just a) = not (esTesoro a)
-          f (Nothing) = False 
+          f = (\a -> case a of 
+                        Just z -> not (esTesoro z)
+                        Nothing -> False)
 
-damePistas :: Diccionario a a -> Maybe a -> Maybe a
+damePistas ::Eq a=> Diccionario a a -> Maybe a -> Maybe a
 damePistas dicc pistaONada = (>>=) pistaONada (\unaPista -> obtener unaPista dicc)
 {-
 (>>=) :: Maybe a -> (a -> Maybe b) -> Maybe b
 
+dropWhile::(a -> Bool) -> [a] -> [a]
 
 [Just a, Just b, nothing, nothing] -> [a, b, c]
 búsquedaDelTesoro pista esTesoro dicc = 
