@@ -16,11 +16,8 @@ Luego devuelvo el primer elemento de la lista (el tesoro, o Nothing)
 -}
 
 búsquedaDelTesoro::Eq a=>a->(a->Bool)->Diccionario a a->Maybe a 
-búsquedaDelTesoro pista esTesoro dicc = head (dropWhile f lista)
+búsquedaDelTesoro pista esTesoro dicc = last (takeWhile isJust lista)
     where lista = iterate (damePistas dicc) (Just pista) 
-          f = (\a -> case a of 
-                        Just z -> not (esTesoro z)
-                        Nothing -> False)
 
 damePistas ::Eq a=> Diccionario a a -> Maybe a -> Maybe a
 damePistas dicc pistaONada = (>>=) pistaONada (\unaPista -> obtener unaPista dicc)
