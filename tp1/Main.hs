@@ -121,5 +121,6 @@ testsEj9 = test [
   ]
   
 testsEj10 = test [
-  Just "alfajor" ~=? búsquedaDelTesoro "inicio" ((=='a').head) dicc2
+  Just "alfajor" ~=? búsquedaDelTesoro "inicio" ((=='a').head) dicc2,
+  Nothing ~=? búsquedaDelTesoro "inicio" ((=='b').head) dicc2
   ]
