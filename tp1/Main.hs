@@ -3,6 +3,7 @@ import Data.Maybe
 import Arbol23
 import Test.HUnit
 import Data.Char
+import Data.List
 
 --Este módulo sirve para utilizar el diccionario sin acceder a su estructura interna. Pueden agregar otras funciones o casos de prueba.
 
@@ -10,60 +11,17 @@ import Data.Char
 
 {-
 Se itera infinitamente obteniendo todas las pistas (incluye (Just pista) y Nothing)
-Esa lista la nombro "lista"
-Luego se descartan aquellos elementos de izquierda a derecha hasta encontrar el tesoro, o hasta encontrar Nothing
-Luego devuelvo el primer elemento de la lista (el tesoro, o Nothing)
+Luego con takeWhile me quedo con todos los (Just pista)
+Luego con catMaybes, convierto [Just pista] a [pista]
+Luego con just busco el tesoro. Si lo encuentro devuelvo (Just tesoro), sino devuelvo Nothing
 -}
 
 búsquedaDelTesoro::Eq a=>a->(a->Bool)->Diccionario a a->Maybe a 
-búsquedaDelTesoro pista esTesoro dicc = last (takeWhile isJust lista)
+búsquedaDelTesoro pista esTesoro dicc = find esTesoro (catMaybes (takeWhile isJust lista))
     where lista = iterate (damePistas dicc) (Just pista) 
 
 damePistas ::Eq a=> Diccionario a a -> Maybe a -> Maybe a
 damePistas dicc pistaONada = (>>=) pistaONada (\unaPista -> obtener unaPista dicc)
-{-
-(>>=) :: Maybe a -> (a -> Maybe b) -> Maybe b
-
-dropWhile::(a -> Bool) -> [a] -> [a]
-
-[Just a, Just b, nothing, nothing] -> [a, b, c]
-búsquedaDelTesoro pista esTesoro dicc = 
-    if (esTesoro pista) then 
-      Just pista 
-    else
-      case (obtener pista dicc) of 
-        Just z -> búsquedaDelTesoro z esTesoro dicc
-        Nothing -> Nothing
-
-
-obtener::Eq clave=>clave->Diccionario clave valor->Maybe valor
-obtener clave dict = (>>=) (estructura dict) f
-            where f = \x -> obtenerClave clave (cmp dict) x
-
-
-(>>=) (obtener pista dicc) f
-            where f = \x -> búsquedaDelTesoro x esTesoro dicc
-
-(>>=) x 
-
-type Estr clave valor = Arbol23 (clave,valor) clave
-data Diccionario clave valor = Dicc {cmp :: Comp clave, estructura :: Maybe (Estr clave valor)}
-
-iterate :: (a -> a) -> a -> [a]
-
-example: iterate (2*) 1 = [1,2,4,8,16,32,64...
-
-(>>=) :: (Monad m) => m a -> (a -> m b) -> m b 
-(>>=) :: [a] -> (a -> [b]) -> [b]
-
-ejemplo (>>=):
-[x*2 | x<-[1..10], odd x] es lo mismo que:
-[1..10] >>= (\x -> if odd x then [x*2] else [])
-
-takeWhile :: (a -> Bool) -> [a] -> [a]
-takeWhile esTesoro lista
-
--}
 
 {- Diccionarios de prueba: -}
 
