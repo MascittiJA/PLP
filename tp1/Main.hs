@@ -8,6 +8,12 @@ import Data.Char
 
 {- Función a implementar. -}
 
+{-
+Se itera infinitamente obteniendo todas las pistas (incluye (Just pista) y Nothing)
+Esa lista la nombro "lista"
+Luego se descartan aquellos elementos de izquierda a derecha hasta encontrar el tesoro, o hasta encontrar Nothing
+Luego devuelvo el primer elemento de la lista (el tesoro, o Nothing)
+-}
 
 búsquedaDelTesoro::Eq a=>a->(a->Bool)->Diccionario a a->Maybe a 
 búsquedaDelTesoro pista esTesoro dicc = head (dropWhile f lista)
