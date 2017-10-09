@@ -27,10 +27,21 @@ adyacenteEnRango(T,F1,C1,F2,C2) :- adyacente(F1,C1,F2,C2), enRango(T,F2,C2).
 direccion(vertical).
 direccion(horizontal).
 
+%elementos
+elemento(o).
+elemento(~).
 
 %dameElEnesimo(Arrego, N, X)
 dameElEnesimo([X|_], 1, X).
 dameElEnesimo([_|Xs], N, Res) :- N > 0, length([_|Xs], Long), N =< Long, N2 is N - 1, dameElEnesimo(Xs, N2, Res).
+
+%colocar(+?Tablero,+Elemento,+Fila,+Columna,?Tablero)
+%colocar(T,E,F,C,T1) :- elemento(E), disponible(T,F,C), .
+
+%colocarBarco(+Barco,+Direccion,+?Tablero,+Fila,+Columna)
+%colocarBarco(0,_,_,_,_).
+%colocarBarco(B,D,T,F,C,T1) :- B > 0, direccion(D), vertical = D, contenido(T,F,C,X), X = o, N is B - 1, F1 is F + 1, colocarBarco(N,D,T1,F1,C).
+%colocarBarco(B,D,T,F,C,T1) :- B > 0, direccion(D), horizontal = D, contenido(T,F,C,X), X = o, N is B - 1, C1 is C + 1, colocarBarco(N,D,T1,F,C1).
 
 %------------------Predicados a definir:------------------%
 
@@ -38,13 +49,16 @@ dameElEnesimo([_|Xs], N, Res) :- N > 0, length([_|Xs], Long), N =< Long, N2 is N
 contenido(T,F,C,X) :- enRango(T,F,C), dameElEnesimo(T,F,Fila), dameElEnesimo(Fila,C,X).
 
 %disponible(+Tablero, ?Fila, ?Columna)
-disponible(T,F,C) :- contenido(T,F,C,X1), X1 \= o, adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2), X2 \= o.
+disponible(T,F,C) :- contenido(T,F,C,X1), X1 \= o.%, adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2), X2 \= o.
+%disponible(T,F,C) :- contenido(T,F,C,X1), X1 \= o, setof(X2 \= o, (adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2)), AdyacentesLimpios), not(member(false, AdyacentesLimpios)).
 
 %puedoColocar(+CantPiezas, ?Direccion, +Tablero, ?Fila, ?Columna)
-puedoColocar(N,D,T,F,C) :- N  > 0, direccion(D), vertical = D, disponible(T,F,C), N1 is N - 1, F1 is F + 1, puedoColocar(N1,D,T,F1,C).
+puedoColocar(N,D,T,F,C) :- N  > 0, direccion(D), vertical = D, setof(disponible(T,F,C)), N1 is N - 1, F1 is F + 1, puedoColocar(N1,D,T,F1,C).
 puedoColocar(N,D,T,F,C) :- N  > 0, direccion(D), horizontal = D, disponible(T,F,C), N1 is N - 1, C1 is C + 1, puedoColocar(N1,D,T,F,C1).
 
 %ubicarBarcos(+Barcos, +?Tablero)
+%ubicarBarcos([],T).
+%ubicarBarcos([Bcantidad|Bs],T) :- puedoColocar(Bcantidad,vertical,T,F1,C1), ).
 
 %completarConAgua(+?Tablero)
 
