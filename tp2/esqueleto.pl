@@ -35,13 +35,10 @@ elemento(~).
 dameElEnesimo([X|_], 1, X).
 dameElEnesimo([_|Xs], N, Res) :- N > 0, length([_|Xs], Long), N =< Long, N2 is N - 1, dameElEnesimo(Xs, N2, Res).
 
-%colocar(+?Tablero,+Elemento,+Fila,+Columna,?Tablero)
-%colocar(T,E,F,C,T1) :- elemento(E), disponible(T,F,C), .
-
-%colocarBarco(+Barco,+Direccion,+?Tablero,+Fila,+Columna)
-%colocarBarco(0,_,_,_,_).
-%colocarBarco(B,D,T,F,C,T1) :- B > 0, direccion(D), vertical = D, contenido(T,F,C,X), X = o, N is B - 1, F1 is F + 1, colocarBarco(N,D,T1,F1,C).
-%colocarBarco(B,D,T,F,C,T1) :- B > 0, direccion(D), horizontal = D, contenido(T,F,C,X), X = o, N is B - 1, C1 is C + 1, colocarBarco(N,D,T1,F,C1).
+%colocarBarco(+Barco,+Direccion,+?Tablero,+Fila,+Columna,-TableroNuevo)
+colocarBarco(0,_,_,_,_).
+colocarBarco(B,D,T,F,C) :- B > 0, direccion(D), vertical = D, B1 is B - 1, F1 is F + 1, contenido(T,F,C,X1), X1 = o, colocarBarco(B1,D,T,F1,C).
+colocarBarco(B,D,T,F,C) :- B > 0, direccion(D), horizontal = D, B1 is B - 1, C1 is C + 1,contenido(T,F,C,X1), X1 = o, colocarBarco(B1,D,T,F,C1).
 
 %------------------Predicados a definir:------------------%
 
@@ -61,8 +58,8 @@ puedoColocar(N,D,T,F,C) :- N  > 0, direccion(D), vertical = D, disponible(T,F,C)
 puedoColocar(N,D,T,F,C) :- N  > 0, direccion(D), horizontal = D, disponible(T,F,C), N1 is N - 1, C1 is C + 1, puedoColocar(N1,D,T,F,C1).
 
 %ubicarBarcos(+Barcos, +?Tablero)
-%ubicarBarcos([],T).
-%ubicarBarcos([Bcantidad|Bs],T) :- puedoColocar(Bcantidad,vertical,T,F1,C1).
+ubicarBarcos([],_).
+%ubicarBarcos([Bcantidad|Bs],T) :- length(T,Filas), nth1(1,T,Fila), length(F1,Columnas), between(1,Filas,F), between(1,Columna,C), puedoColocar(Bcantidad,horizontal,T,F,C) .
 
 %completarConAgua(+?Tablero)
 
