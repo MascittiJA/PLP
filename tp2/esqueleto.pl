@@ -46,14 +46,17 @@ dameElEnesimo([_|Xs], N, Res) :- N > 0, length([_|Xs], Long), N =< Long, N2 is N
 %------------------Predicados a definir:------------------%
 
 %contenido(+?Tablero, ?Fila, ?Columna, ?Contenido)
-contenido(T,F,C,X) :- enRango(T,F,C), dameElEnesimo(T,F,Fila), dameElEnesimo(Fila,C,X).
+%contenido(T,F,C,X) :- enRango(T,F,C), dameElEnesimo(T,F,Fila), dameElEnesimo(Fila,C,X).
+contenido(T,F,C,X) :- enRango(T,F,C), nth1(F,T,Fila), nth1(C,Fila,X).
 
 %disponible(+Tablero, ?Fila, ?Columna)
-disponible(T,F,C) :- contenido(T,F,C,X1), X1 \= o.%, adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2), X2 \= o.
-%disponible(T,F,C) :- contenido(T,F,C,X1), X1 \= o, setof(X2 \= o, (adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2)), AdyacentesLimpios), not(member(false, AdyacentesLimpios)).
+%disponible(T,F,C) :- contenido(T,F,C,X1), var(X1), adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2), var(X2).
+%disponible(T,F,C) :- contenido(T,F,C,X1), var(X1), setof(var(X2), (adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2)), Set), length(Set, Long), Long = 1.
+disponible(T,F,C,N) :- contenido(T,F,C,X1), var(X1), setof(var(X2), (adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2)), Set), length(Set, Long), Long = 1, N = Set.
 
 %puedoColocar(+CantPiezas, ?Direccion, +Tablero, ?Fila, ?Columna)
-puedoColocar(N,D,T,F,C) :- N  > 0, direccion(D), vertical = D, setof(disponible(T,F,C)), N1 is N - 1, F1 is F + 1, puedoColocar(N1,D,T,F1,C).
+puedoColocar(0,_,_,_,_).
+puedoColocar(N,D,T,F,C) :- N  > 0, direccion(D), vertical = D, disponible(T,F,C), N1 is N - 1, F1 is F + 1, puedoColocar(N1,D,T,F1,C).
 puedoColocar(N,D,T,F,C) :- N  > 0, direccion(D), horizontal = D, disponible(T,F,C), N1 is N - 1, C1 is C + 1, puedoColocar(N1,D,T,F,C1).
 
 %ubicarBarcos(+Barcos, +?Tablero)
