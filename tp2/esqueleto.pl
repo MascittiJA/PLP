@@ -52,7 +52,8 @@ contenido(T,F,C,X) :- enRango(T,F,C), nth1(F,T,Fila), nth1(C,Fila,X).
 %disponible(+Tablero, ?Fila, ?Columna)
 %disponible(T,F,C) :- contenido(T,F,C,X1), var(X1), adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2), var(X2).
 %disponible(T,F,C) :- contenido(T,F,C,X1), var(X1), setof(var(X2), (adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2)), Set), length(Set, Long), Long = 1.
-disponible(T,F,C,N) :- contenido(T,F,C,X1), var(X1), setof(var(X2), (adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2)), Set), length(Set, Long), Long = 1, N = Set.
+%disponible(T,F,C,N) :- contenido(T,F,C,X1), var(X1), setof(var(X2), (adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2)), Set), length(Set, Long), Long = 1, N = Set.
+disponible(T,F,C) :- contenido(T,F,C,X1), var(X1), not(not(not((adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2), nonvar(X2))))).
 
 %puedoColocar(+CantPiezas, ?Direccion, +Tablero, ?Fila, ?Columna)
 puedoColocar(0,_,_,_,_).
@@ -61,7 +62,7 @@ puedoColocar(N,D,T,F,C) :- N  > 0, direccion(D), horizontal = D, disponible(T,F,
 
 %ubicarBarcos(+Barcos, +?Tablero)
 %ubicarBarcos([],T).
-%ubicarBarcos([Bcantidad|Bs],T) :- puedoColocar(Bcantidad,vertical,T,F1,C1), ).
+%ubicarBarcos([Bcantidad|Bs],T) :- puedoColocar(Bcantidad,vertical,T,F1,C1).
 
 %completarConAgua(+?Tablero)
 
