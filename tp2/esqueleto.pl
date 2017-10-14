@@ -67,8 +67,9 @@ ubicarBarcos([Bcantidad|Bs],T) :- recorrerTablero(T,X,Y), puedoColocar(Bcantidad
 ubicarBarcos([Bcantidad|Bs],T) :- recorrerTablero(T,X,Y), puedoColocar(Bcantidad,vertical,T,X,Y), not(puedoColocar(Bcantidad,horizontal,T,X,Y)), colocarBarco(Bcantidad,vertical,T,X,Y), ubicarBarcos(Bs,T) .
 
 %completarConAgua(+?Tablero)
-completarConAgua(_) :- not(not((recorrerTablero(T,X,Y), contenido(T,X,Y,X1), var(X1)))).
-completarConAgua(T) :- recorrerTablero(T,X,Y), contenido(T,X,Y,~), completarConAgua(T).
+completarConAgua(T) :- not(not((recorrerTablero(T,X,Y), contenido(T,X,Y,X1), var(X1)))), recorrerTablero(T,X,Y), contenido(T,X,Y,~).
+%completarConAgua(T) :- not(not((recorrerTablero(T,X,Y), contenido(T,X,Y,X1), var(X1)))), recorrerTablero(T,X,Y), contenido(T,X,Y,~), completarConAgua(T).
+%completarConAgua(T) :- recorrerTablero(T,X,Y), contenido(T,X,Y,~), completarConAgua(T)).
 
 %golpear(+Tablero, +NumFila, +NumColumna, -NuevoTab)
 
