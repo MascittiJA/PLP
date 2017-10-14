@@ -37,8 +37,12 @@ dameElEnesimo([_|Xs], N, Res) :- N > 0, length([_|Xs], Long), N =< Long, N2 is N
 
 %colocarBarco(+Barco,+Direccion,+?Tablero,+Fila,+Columna,-TableroNuevo)
 colocarBarco(0,_,_,_,_).
-colocarBarco(B,D,T,F,C) :- B > 0, direccion(D), vertical = D, B1 is B - 1, F1 is F + 1, contenido(T,F,C,X1), X1 = o, colocarBarco(B1,D,T,F1,C).
-colocarBarco(B,D,T,F,C) :- B > 0, direccion(D), horizontal = D, B1 is B - 1, C1 is C + 1,contenido(T,F,C,X1), X1 = o, colocarBarco(B1,D,T,F,C1).
+colocarBarco(B,D,T,F,C) :- B > 0, direccion(D), vertical = D, B1 is B - 1, F1 is F + 1, contenido(T,F,C,o), colocarBarco(B1,D,T,F1,C).
+colocarBarco(B,D,T,F,C) :- B > 0, direccion(D), horizontal = D, B1 is B - 1, C1 is C + 1, contenido(T,F,C,o), colocarBarco(B1,D,T,F,C1).
+
+%recorrerTablero(+?Tablero,?Fila,?Columna)
+%generate_and_test recorriendo las filas y Columnas de la matriz
+recorrerTablero(T,F,C) :- length(T,Filas), nth1(1,T,Fila), length(Fila,Columnas), N is Filas + Columnas, between(2,N,Suma), between(1,Suma,F), C is Suma - F, C \= 0, enRango(T,F,C).
 
 %------------------Predicados a definir:------------------%
 
@@ -59,9 +63,12 @@ puedoColocar(N,D,T,F,C) :- N  > 0, direccion(D), horizontal = D, disponible(T,F,
 
 %ubicarBarcos(+Barcos, +?Tablero)
 ubicarBarcos([],_).
-%ubicarBarcos([Bcantidad|Bs],T) :- length(T,Filas), nth1(1,T,Fila), length(F1,Columnas), between(1,Filas,F), between(1,Columna,C), puedoColocar(Bcantidad,horizontal,T,F,C) .
+ubicarBarcos([Bcantidad|Bs],T) :- recorrerTablero(T,X,Y), puedoColocar(Bcantidad,horizontal,T,X,Y), colocarBarco(Bcantidad,horizontal,T,X,Y), ubicarBarcos(Bs,T) .
+ubicarBarcos([Bcantidad|Bs],T) :- recorrerTablero(T,X,Y), puedoColocar(Bcantidad,vertical,T,X,Y), not(puedoColocar(Bcantidad,horizontal,T,X,Y)), colocarBarco(Bcantidad,vertical,T,X,Y), ubicarBarcos(Bs,T) .
 
 %completarConAgua(+?Tablero)
+completarConAgua(_) :- not(not((recorrerTablero(T,X,Y), contenido(T,X,Y,X1), var(X1)))).
+completarConAgua(T) :- recorrerTablero(T,X,Y), contenido(T,X,Y,~), completarConAgua(T).
 
 %golpear(+Tablero, +NumFila, +NumColumna, -NuevoTab)
 
