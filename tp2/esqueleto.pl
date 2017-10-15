@@ -98,4 +98,23 @@ atacar(T,F,C,Res,Tnew) :- contenido(T,F,C,o), golpear(T,F,C,Tnew), not(not(not(a
 
 test(1) :- matriz(M,2,3), adyacenteEnRango(M,2,2,2,3).
 test(2) :- matriz(M,2,3), setof((F,C), adyacenteEnRango(M,1,1,F,C), [ (1, 2), (2, 1), (2, 2)]).
-tests :- forall(between(1,2,N), test(N)). % Cambiar el 2 por la cantidad de tests que tengan.
+test(3) :- matriz(M,3,3), contenido(M,1,1,o), not(disponible(M,1,1)).
+test(4) :- matriz(M,3,3), contenido(M,1,1,o), not(disponible(M,1,2)).
+test(5) :- matriz(M,3,3), contenido(M,1,1,o), not(disponible(M,2,1)).
+test(6) :- matriz(M,3,3), contenido(M,1,1,o), not(disponible(M,2,2)).
+test(7) :- matriz(M,3,3), contenido(M,1,1,o), disponible(M,1,3).
+test(8) :- matriz(M,3,3), contenido(M,1,1,o), disponible(M,2,3).
+test(9) :- matriz(M,3,3), contenido(M,1,1,o), disponible(M,3,3).
+test(10) :- matriz(M,3,3), contenido(M,1,1,o), disponible(M,3,2).
+test(11) :- matriz(M,3,3), contenido(M,1,1,o), disponible(M,3,1).
+test(12) :- matriz(M,2,2), puedoColocar(2,horizontal,M,1,1).
+test(13) :- matriz(M,2,2), puedoColocar(2,horizontal,M,2,1).
+test(14) :- matriz(M,2,2), not(puedoColocar(2,horizontal,M,2,2)).
+test(15) :- matriz(M,2,2), not(puedoColocar(2,horizontal,M,1,2)).
+test(16) :- matriz(M,3,2), setof(M, (ubicarBarcos([2,1],M), completarConAgua(M)), Set),
+    Set = [[[o, o], [~, ~], [o, ~]], [[o, o], [~, ~], [~, o]], [[o, ~], [~, ~], [o, o]], [[~, o], [~, ~], [o, o]]].
+test(17) :- matriz(M,3,3), completarConAgua(M), 
+    M = [[~, ~, ~], [~, ~, ~], [~, ~, ~]].
+test(18) :- matriz(M,3,3), contenido(M,1,1,o), contenido(M,2,2,o), contenido(M,3,3,o), completarConAgua(M),
+    M = [[o, ~, ~], [~, o, ~], [~, ~, o]].
+tests :- forall(between(1,18,N), test(N)). % Cambiar el 2 por la cantidad de tests que tengan.
