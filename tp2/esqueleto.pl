@@ -78,11 +78,17 @@ ubicarBarcos([Bcantidad|Bs],T) :- recorrerTablero(T,F,C), puedoColocar(Bcantidad
 completarConAgua(T) :- maplist(maplist(agua),T,T).
 
 %golpear(+Tablero, +NumFila, +NumColumna, -NuevoTab)
-golpear(T,F,C,Tnew) :- enRango(T,F,C), recorrerTablero(T,F1,C1), F =\= F1, C =\= C1, contenido(T,F1,C1,X), contenido(Tnew,F1,C1,X).%, contenido(Tnew,F,C,~).
+golpear(T,F,C,T) :- enRango(T,F,C), contenido(T,F,C,~).
+%golpear(T,F,C,Tnew) :- enRango(T,F,C), contenido(Tnew,F,C,~), recorrerTablero(T,F1,C1), (F,C) \= (F1,C1), contenido(T,F1,C1,Copiar), contenido(Tnew,F1,C1,Copiar).
+golpear(T,F,C,Tnew) :- enRango(T,F,C), contenido(Tnew,F,C,~), forall((recorrerTablero(T,F1,C1), (F,C) \= (F1,C1)), (contenido(T,F1,C1,Copiar), contenido(Tnew,F1,C1,Copiar))).
+
 
 
 % Completar instanciación soportada y justificar.
 %atacar(Tablero, Fila, Columna, Resultado, NuevoTab)
+atacar(T,F,C,Res,Tnew) :- contenido(T,F,C,~), golpear(T,F,C,Tnew), Res is agua.
+atacar(T,F,C,Res,Tnew) :- contenido(T,F,C,o), golpear(T,F,C,Tnew), not(not(adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,o))), Res is tocado.
+atacar(T,F,C,Res,Tnew) :- contenido(T,F,C,o), golpear(T,F,C,Tnew), not(not(not(adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,o)))), Res is hundido.
 
 %------------------Tests:------------------%
 
