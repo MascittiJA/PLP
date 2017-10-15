@@ -43,6 +43,14 @@ colocarBarco(B,D,T,F,C) :- B > 0, direccion(D), horizontal = D, B1 is B - 1, C1 
 %recorrerTablero(+?Tablero,?Fila,?Columna)
 recorrerTablero(T,F,C) :- length(T,Filas), nth1(1,T,Fila), length(Fila,Columnas), N is Filas + Columnas, between(2,N,Suma), between(1,Suma,F), C is Suma - F, C \= 0, enRango(T,F,C).
 
+%agua(?X,?Y)
+agua(X,Y) :- var(X), (Y = ~).
+agua(X,Y) :- nonvar(X), Y = X.
+
+
+copiarCelda(T,F,C,Tnew) :- contenido(T,F,C,X) = contenido(Tnew,F,C,X).
+
+copiarTablero(T,Tnew) :- recorrerTablero(T,F1,C1), copiarCelda(T,F1,C1,Tnew).
 %------------------Predicados a definir:------------------%
 
 %contenido(+?Tablero, ?Fila, ?Columna, ?Contenido)
@@ -66,8 +74,12 @@ ubicarBarcos([Bcantidad|Bs],T) :- recorrerTablero(T,F,C), puedoColocar(Bcantidad
 ubicarBarcos([Bcantidad|Bs],T) :- recorrerTablero(T,F,C), puedoColocar(Bcantidad,vertical,T,F,C), not(puedoColocar(Bcantidad,horizontal,T,F,C)), colocarBarco(Bcantidad,vertical,T,F,C), ubicarBarcos(Bs,T) .
 
 %completarConAgua(+?Tablero)
+%completarConAgua(T) :- not(not((recorrerTablero(T,F1,C1), contenido(T,F1,C1,X1), var(X1)))), recorrerTablero(T,F,C), contenido(T,F,C,~), completarConAgua(T).
+completarConAgua(T) :- maplist(maplist(agua),T,T).
 
 %golpear(+Tablero, +NumFila, +NumColumna, -NuevoTab)
+golpear(T,F,C,Tnew) :- enRango(T,F,C), recorrerTablero(T,F1,C1), F =\= F1, C =\= C1, contenido(T,F1,C1,X), contenido(Tnew,F1,C1,X).%, contenido(Tnew,F,C,~).
+
 
 % Completar instanciación soportada y justificar.
 %atacar(Tablero, Fila, Columna, Resultado, NuevoTab)
