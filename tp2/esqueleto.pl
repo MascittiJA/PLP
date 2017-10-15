@@ -85,7 +85,11 @@ golpear(T,F,C,Tnew) :- enRango(T,F,C), contenido(Tnew,F,C,~), forall((recorrerTa
 
 
 % Completar instanciación soportada y justificar.
-%atacar(Tablero, Fila, Columna, Resultado, NuevoTab)
+% ----------------------------------------------------------------------------------------------------------- %
+% El predicado golpear necesita Tablre, Fila, Columna instanciados, con lo cual este tambien pues los utiliza
+% Luego Resultado siempre está bien definido, con lo cual puede venir instanciado o no.
+% ----------------------------------------------------------------------------------------------------------- %
+%atacar(+Tablero, +Fila, +Columna, ?Resultado, -NuevoTab)
 atacar(T,F,C,Res,Tnew) :- contenido(T,F,C,~), golpear(T,F,C,Tnew), Res is agua.
 atacar(T,F,C,Res,Tnew) :- contenido(T,F,C,o), golpear(T,F,C,Tnew), not(not(adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,o))), Res is tocado.
 atacar(T,F,C,Res,Tnew) :- contenido(T,F,C,o), golpear(T,F,C,Tnew), not(not(not(adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,o)))), Res is hundido.
