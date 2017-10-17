@@ -54,32 +54,53 @@ igualSalvoIesimo(Xs,I,Ys) :- append(Principio, [_|Ultimos], Xs), append(Principi
 %------------------Predicados a definir:------------------%
 
 %contenido(+?Tablero, ?Fila, ?Columna, ?Contenido)
-%contenido(T,F,C,X) :- enRango(T,F,C), dameElEnesimo(T,F,Fila), dameElEnesimo(Fila,C,X).
 contenido(T,F,C,X) :- enRango(T,F,C), nth1(F,T,Fila), nth1(C,Fila,X).
 
 %disponible(+Tablero, ?Fila, ?Columna)
-%disponible(T,F,C) :- contenido(T,F,C,X1), var(X1), adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2), var(X2).
-%disponible(T,F,C) :- contenido(T,F,C,X1), var(X1), setof(var(X2), (adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2)), Set), length(Set, Long), Long = 1.
-%disponible(T,F,C,N) :- contenido(T,F,C,X1), var(X1), setof(var(X2), (adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2)), Set), length(Set, Long), Long = 1, N = Set.
-disponible(T,F,C) :- contenido(T,F,C,X1), var(X1), not(not(not((adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,X2), nonvar(X2))))).
+disponible(T,F,C) :- 
+	contenido(T,F,C,X1), 
+	var(X1), 
+	not(
+		not(
+			not(
+				(adyacenteEnRango(T,F,C,F1,C1), 
+					contenido(T,F1,C1,X2), 
+					nonvar(X2))
+				)
+			)
+		).
 
 %puedoColocar(+CantPiezas, ?Direccion, +Tablero, ?Fila, ?Columna)
 puedoColocar(0,_,_,_,_).
-puedoColocar(N,D,T,F,C) :- N  > 0, direccion(D), vertical = D, disponible(T,F,C), N1 is N - 1, F1 is F + 1, puedoColocar(N1,D,T,F1,C).
-puedoColocar(N,D,T,F,C) :- N  > 0, direccion(D), horizontal = D, disponible(T,F,C), N1 is N - 1, C1 is C + 1, puedoColocar(N1,D,T,F,C1).
+puedoColocar(N,vertical,T,F,C) :- N  > 0, disponible(T,F,C), N1 is N - 1, F1 is F + 1, puedoColocar(N1,vertical,T,F1,C).
+puedoColocar(N,horizontal,T,F,C) :- N  > 0, disponible(T,F,C), N1 is N - 1, C1 is C + 1, puedoColocar(N1,horizontal,T,F,C1).
 
 %ubicarBarcos(+Barcos, +?Tablero)
 ubicarBarcos([],_).
-ubicarBarcos([Bcantidad|Bs],T) :- recorrerTablero(T,F,C), puedoColocar(Bcantidad,horizontal,T,F,C), colocarBarco(Bcantidad,horizontal,T,F,C), ubicarBarcos(Bs,T) .
-ubicarBarcos([Bcantidad|Bs],T) :- recorrerTablero(T,F,C), puedoColocar(Bcantidad,vertical,T,F,C), not(puedoColocar(Bcantidad,horizontal,T,F,C)), colocarBarco(Bcantidad,vertical,T,F,C), ubicarBarcos(Bs,T) .
+ubicarBarcos([Bcantidad|Bs],T) :- 
+	recorrerTablero(T,F,C), 
+	puedoColocar(Bcantidad,horizontal,T,F,C), 
+	colocarBarco(Bcantidad,horizontal,T,F,C), 
+	ubicarBarcos(Bs,T) .
+ubicarBarcos([Bcantidad|Bs],T) :- 
+	recorrerTablero(T,F,C), 
+	puedoColocar(Bcantidad,vertical,T,F,C), 
+	not(puedoColocar(Bcantidad,horizontal,T,F,C)), 
+	colocarBarco(Bcantidad,vertical,T,F,C), 
+	ubicarBarcos(Bs,T) .
 
 %completarConAgua(+?Tablero)
-%completarConAgua(T) :- not(not((recorrerTablero(T,F1,C1), contenido(T,F1,C1,X1), var(X1)))), recorrerTablero(T,F,C), contenido(T,F,C,~), completarConAgua(T).
 completarConAgua(T) :- maplist(maplist(agua),T,T).
 
 %golpear(+Tablero, +NumFila, +NumColumna, -NuevoTab)
 golpear(T,F,C,T) :- enRango(T,F,C), contenido(T,F,C,~).
-golpear(T,F,C,Tnew) :- enRango(T,F,C), igualSalvoIesimo(T,F,Tnew), nth1(F,T,FilaVieja), nth1(F,Tnew,FilaNueva), igualSalvoIesimo(FilaVieja,C,FilaNueva), nth1(C,FilaNueva,~), not(contenido(T,F,C,~)).
+golpear(T,F,C,Tnew) :- 
+	enRango(T,F,C), 
+	igualSalvoIesimo(T,F,Tnew), 
+	nth1(F,T,FilaVieja), nth1(F,Tnew,FilaNueva), 
+	igualSalvoIesimo(FilaVieja,C,FilaNueva), 
+	nth1(C,FilaNueva,~), 
+	not(contenido(T,F,C,~)).
 
 
 % Completar instanciación soportada y justificar.
@@ -88,9 +109,9 @@ golpear(T,F,C,Tnew) :- enRango(T,F,C), igualSalvoIesimo(T,F,Tnew), nth1(F,T,Fila
 % Luego Resultado siempre está bien definido, con lo cual puede venir instanciado o no.
 % ----------------------------------------------------------------------------------------------------------- %
 %atacar(+Tablero, +Fila, +Columna, ?Resultado, -NuevoTab)
-atacar(T,F,C,Res,Tnew) :- contenido(T,F,C,~), golpear(T,F,C,Tnew), Res = agua.
-atacar(T,F,C,Res,Tnew) :- contenido(T,F,C,o), golpear(T,F,C,Tnew), not(not((adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,o)))), Res = tocado.
-atacar(T,F,C,Res,Tnew) :- contenido(T,F,C,o), golpear(T,F,C,Tnew), not(not(not((adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,o))))), Res = hundido.
+atacar(T,F,C,agua,Tnew) :- contenido(T,F,C,~), golpear(T,F,C,Tnew).
+atacar(T,F,C,tocado,Tnew) :- contenido(T,F,C,o), golpear(T,F,C,Tnew), not(not((adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,o)))).
+atacar(T,F,C,hundido,Tnew) :- contenido(T,F,C,o), golpear(T,F,C,Tnew), not(not(not((adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,o))))).
 
 %------------------Tests:------------------%
 
