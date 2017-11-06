@@ -130,8 +130,9 @@ desde(X,Y) :- var(Y), N is X + 1, desde(N,Y).
 
 %interseccion(+L1, +L2, -L3)
 %interseccion(_,[],[]).
-%interseccion([],_,[]).
+interseccion([],_,[]).
 %interseccion([X|Xs], [Y|Ys], Ls) :- X \= Y, interseccion([X|Xs],Ys,Ls).
 %interseccion([X|Xs], [X|Ys], [X|Ls]) :- interseccion(Xs,Ys,Ls).
 
 interseccion([X|Xs], L, [X|Ys]) :- pertenece(X,L), interseccion(Xs,L,Ys).
+interseccion([X|Xs], L, Ys) :- not(pertenece(X,L)), interseccion(Xs,L,Ys).
