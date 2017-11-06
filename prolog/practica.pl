@@ -115,3 +115,23 @@ doble([X|Xs],Ys) :- Ys = [X,X|L], doble(Xs,L).
 %iesimo(?I, +L, -X)
 iesimo(1,[X|_],X).
 iesimo(N,[_|Xs],Y) :- N > 1, B is N - 1, iesimo(B,Xs,Y).
+
+% --------------------------------------------- %
+% ---------------- Ejercicio 8 ---------------- %
+% --------------------------------------------- %
+desde(X,X).
+desde(X,Y) :- nonvar(Y), Y > X.
+desde(X,Y) :- var(Y), N is X + 1, desde(N,Y).
+
+
+% --------------------------------------------- %
+% ---------------- Ejercicio 9 ---------------- %
+% --------------------------------------------- %
+
+%interseccion(+L1, +L2, -L3)
+%interseccion(_,[],[]).
+%interseccion([],_,[]).
+%interseccion([X|Xs], [Y|Ys], Ls) :- X \= Y, interseccion([X|Xs],Ys,Ls).
+%interseccion([X|Xs], [X|Ys], [X|Ls]) :- interseccion(Xs,Ys,Ls).
+
+interseccion([X|Xs], L, [X|Ys]) :- pertenece(X,L), interseccion(Xs,L,Ys).
