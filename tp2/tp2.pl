@@ -125,13 +125,13 @@ golpear(T,F,C,Tnew) :-
 atacar(T,F,C,agua,T) :- contenido(T,F,C,~).
 atacar(T,F,C,tocado,Tnew) :-
 	contenido(T,F,C,o),
-	golpear(T,F,C,Tnew),
-	not(forall(adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,~))).
+	not(forall(adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,~))),
+	golpear(T,F,C,Tnew).
 %	not(not((adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,o)))).
 atacar(T,F,C,hundido,Tnew) :-
 	contenido(T,F,C,o),
-	golpear(T,F,C,Tnew),
-	forall(adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,~)).
+	forall(adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,~)),
+	golpear(T,F,C,Tnew).
 %	not(not(not((adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,o))))).
 
 %------------------Tests:------------------%
