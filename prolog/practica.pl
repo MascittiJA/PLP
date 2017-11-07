@@ -66,10 +66,12 @@ reverse([X|Xs],Ls) :- reverse(Xs,Ys), concatenar(Ys,[X],Ls).
 %III)
 %maxList(+L,-M)
 maxList([X],X).
-maxList([X|Xs],M) :- M > X, maxList(Xs,M).
-maxList([X|Xs],X) :- M =< X, maxList(Xs,M).
+maxList([X|Xs],M) :- maxList(Xs,X1), M is max(X,X1).
+%maxList([X|Xs],X) :- M =< X, maxList(Xs,M).
 
 %minList(+L,-M)
+minList([X],X).
+minList([X|Xs],M) :- minList(Xs,X1), M is min(X,X1).
 
 
 
@@ -222,4 +224,4 @@ coprimos(X,Y) :- desde(2,N), between(2,N,X), Y is N - X, Y \= 1, 1 is gcd(X,Y).
 % ---------------- Ejercicio 15 --------------- %
 % --------------------------------------------- %
 
-cuadradoSemiLatino(N,X) :- desde(0,I), length(X,N), forall(member(M,X), length(M,N)). 
+%cuadradoSemiLatino(N,X) :- desde(0,I), length(X,N), forall(member(M,X), length(M,N)). 
