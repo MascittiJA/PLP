@@ -129,10 +129,97 @@ desde(X,Y) :- var(Y), N is X + 1, desde(N,Y).
 % --------------------------------------------- %
 
 %interseccion(+L1, +L2, -L3)
-%interseccion(_,[],[]).
+interseccion(_,[],[]).
 interseccion([],_,[]).
 %interseccion([X|Xs], [Y|Ys], Ls) :- X \= Y, interseccion([X|Xs],Ys,Ls).
 %interseccion([X|Xs], [X|Ys], [X|Ls]) :- interseccion(Xs,Ys,Ls).
+interseccion([X|Xs], L, [X|Ys]) :- pertenece(X,L), borrar(L,X,L2), borrar(Xs,X,L3), interseccion(L3,L2,Ys).
+interseccion([X|Xs], L, Ys) :- not(pertenece(X,L)), borrar(Xs,X,L3), interseccion(L3,L,Ys).
 
-interseccion([X|Xs], L, [X|Ys]) :- pertenece(X,L), interseccion(Xs,L,Ys).
-interseccion([X|Xs], L, Ys) :- not(pertenece(X,L)), interseccion(Xs,L,Ys).
+%split(N, L, L1, L2)
+%split(0,L,[],L).
+split(N,L,L1,L2) :- length(L,Len), Len >= N, length(L1,N), concatenar(L1,L2,L).
+    
+%borrar(+L, +E, -L2)
+borrar([],_,[]).
+borrar([X|Xs], X, Ys) :- borrar(Xs,X,Ys).
+borrar([X|Xs], E, [X|Ys]) :- X \= E, borrar(Xs,E,Ys).
+
+%sacarDuplicados+L1, -L2)
+sacarDuplicados([],[]).
+sacarDuplicados([X|Xs],[X|Ys]) :- borrar(Xs,X,Ls), sacarDuplicados(Ls,Ys).
+
+%reparto(+L, +N, -Llistas)
+reparto(Xs, 1, [Xs]).
+reparto([],N,[[]|Ys]) :- N > 1, N1 is N - 1, reparto([],N1,Ys). 
+reparto([X|Xs], N, [[X]|Ys]) :- N > 1, N1 is N - 1, reparto(Xs,N1,Ys).
+
+%reparto(Xs,N,Ys) :- length(Ys,N), forall(member(M,Ys), sublista(M,Xs)), aplanar(Ys,Xs).
+
+%repartoSinVacias(+L, -Llistas)
+%reparto(Xs, N, Ys) :- length(Ys,.
+%reparto([],N,[[]|Ys]) :- N > 1, N1 is N - 1, reparto([],N1,Ys). 
+%reparto([X|Xs], N, [[X]|Ys]) :- N > 1, N1 is N - 1, reparto(Xs,N1,Ys).
+
+
+% --------------------------------------------- %
+% ---------------- Ejercicio 10 --------------- %
+% --------------------------------------------- %
+
+%intercalar(L1, L2, L3)
+intercalar(L1, L2, L3) :- intercalarAux(1,L1,L2,L3).
+
+%intercalarAux(N,L1,L2,L3)
+intercalarAux(_,[],L2,L2).
+intercalarAux(_,L1,[],L1).
+intercalarAux(1,[X|Xs],L2,[X|L3]) :- L2 \= [], intercalarAux(2,Xs,L2,L3).
+intercalarAux(2,L1,[X|Xs],[X|L3]) :- L1 \= [], intercalarAux(1,L1,Xs,L3).
+
+
+% --------------------------------------------- %
+% ---------------- Ejercicio 11 --------------- %
+% --------------------------------------------- %
+
+% PREGUNTAR
+
+
+
+% --------------------------------------------- %
+% ---------------- Ejercicio 12 --------------- %
+% --------------------------------------------- %
+
+vacio(nill).
+
+raiz(bin(_,R,_),R).
+
+altura(nill,0).
+altura(bin(I,_,D), Res) :- altura(I,N1), altura(D,N2), Res is 1 + max(N1,N2).
+
+cantidadDeNodos(nill,0).
+cantidadDeNodos(bin(I,_,D), Res) :- cantidadDeNodos(I,N1), cantidadDeNodos(D,N2), Res is 1 + N1 + N2.
+
+
+
+% --------------------------------------------- %
+% ---------------- Ejercicio 13 --------------- %
+% --------------------------------------------- %
+
+%inorder(+AB, -Lista)
+inorder(nill,[]).
+inorder(bin(I,R,D), Res) :- inorder(I,Is), inorder(D,Ds), concatenar(Is,[R],L), concatenar(L,Ds,Res).
+
+
+
+% --------------------------------------------- %
+% ---------------- Ejercicio 14 --------------- %
+% --------------------------------------------- %
+
+coprimos(X,Y) :- desde(2,N), between(2,N,X), Y is N - X, Y \= 1, 1 is gcd(X,Y).
+
+
+
+% --------------------------------------------- %
+% ---------------- Ejercicio 15 --------------- %
+% --------------------------------------------- %
+
+cuadradoSemiLatino(N,X) :- desde(0,I), length(X,N), forall(member(M,X), length(M,N)). 
