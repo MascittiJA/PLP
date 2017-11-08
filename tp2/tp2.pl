@@ -77,29 +77,32 @@ disponible(T,F,C) :-
 
 %puedoColocar(+CantPiezas, ?Direccion, +Tablero, ?Fila, ?Columna)
 puedoColocar(0,_,_,_,_).
-puedoColocar(N,D,T,F,C) :- 
+puedoColocar(N,vertical,T,F,C) :- 
 	disponible(T,F,C),
-	D = vertical,
 	restarYsumarUno(N,F,N1,F1),
-	puedoColocar(N1,D,T,F1,C).
-puedoColocar(N,D,T,F,C) :-
+	puedoColocar(N1,vertical,T,F1,C).
+puedoColocar(N,horizontal,T,F,C) :-
 	disponible(T,F,C),
-	D = horizontal,
 	restarYsumarUno(N,C,N1,C1),
-	puedoColocar(N1,D,T,F,C1).
+	puedoColocar(N1,horizontal,T,F,C1).
 
+colocarBarcosSiPuedo(Bcantidad,T,Direccion,F,C) :-
+%	recorrerTablero(T,F,C),
+	puedoColocar(Bcantidad,Direccion,T,F,C),
+	colocarBarco(Bcantidad,Direccion,T,F,C).
+%	ubicarBarcos(Bs,T).
+    
+	
 %ubicarBarcos(+Barcos, +?Tablero)
 ubicarBarcos([],_).
 ubicarBarcos([Bcantidad|Bs],T) :-
 	recorrerTablero(T,F,C),
-	puedoColocar(Bcantidad,horizontal,T,F,C),
-	colocarBarco(Bcantidad,horizontal,T,F,C),
+    colocarBarcosSiPuedo(Bcantidad,T,horizontal,F,C),
 	ubicarBarcos(Bs,T) .
 ubicarBarcos([Bcantidad|Bs],T) :-
 	recorrerTablero(T,F,C),
 	not(puedoColocar(Bcantidad,horizontal,T,F,C)),
-	puedoColocar(Bcantidad,vertical,T,F,C),
-	colocarBarco(Bcantidad,vertical,T,F,C),
+    colocarBarcosSiPuedo(Bcantidad,T,vertical,F,C),
 	ubicarBarcos(Bs,T) .
 
 %completarConAgua(+?Tablero)
@@ -118,21 +121,19 @@ golpear(T,F,C,Tnew) :-
 
 % Completar instanciación soportada y justificar.
 % ----------------------------------------------------------------------------------------------------------- %
-% El predicado golpear necesita Tablero, Fila, Columna instanciados, con lo cual este tambien pues los utiliza
-% Luego Resultado siempre está bien definido, con lo cual puede venir instanciado o no.
+% El predicado contenido(+?T, ?F, ?C, ?E) necesita un tablero parcialemente instanciado, pero luego todos sus parametros son reversibles. Luego de verificar contenido, T, F y C quedan instanciadas. Por lo tanto el resto del predicado tambien tiene sus parametros correctamente instanciados. Tanto golpear(+T, +F, +C, -T1), como adyacenteEnRango(+Tablero, +F1, +C1, ?F2, ?C2) estan correctamente instanciados a la hora de evaluarse.
+% Por lo tanto este predicado es reversible en todos sus parámetros, pero necesita un tablero parcialmente instanciado para no quedar colgado instanciando todos los tableros posibles. 
 % ----------------------------------------------------------------------------------------------------------- %
-%atacar(+Tablero, +Fila, +Columna, ?Resultado, -NuevoTab)
+%atacar(+?Tablero, ?Fila, ?Columna, ?Resultado, ?NuevoTab)
 atacar(T,F,C,agua,T) :- contenido(T,F,C,~).
 atacar(T,F,C,tocado,Tnew) :-
 	contenido(T,F,C,o),
 	not(forall(adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,~))),
 	golpear(T,F,C,Tnew).
-%	not(not((adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,o)))).
 atacar(T,F,C,hundido,Tnew) :-
 	contenido(T,F,C,o),
 	forall(adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,~)),
 	golpear(T,F,C,Tnew).
-%	not(not(not((adyacenteEnRango(T,F,C,F1,C1), contenido(T,F1,C1,o))))).
 
 %------------------Tests:------------------%
 
